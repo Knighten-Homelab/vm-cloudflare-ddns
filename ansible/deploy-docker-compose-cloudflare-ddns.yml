@@ -1,0 +1,15 @@
+---
+- name: Setup Cloudflare DDNS Deployed Via Docker Compose
+  hosts: "{{ host }}"
+  become: true
+  vars:
+    host: localhost
+  roles:
+    - role: geerlingguy.pip
+      vars:
+        pip_install_packages:
+          - name: docker
+    - role: geerlingguy.docker
+      vars:
+        docker_install_compose: true
+    - role: cloudflare-ddns

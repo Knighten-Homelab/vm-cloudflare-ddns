@@ -1,0 +1,9 @@
+---
+- name: Compose Up or Restart
+  community.docker.docker_compose_v2:
+    project_src: /opt/ddns
+    state: present
+    recreate: auto
+    pull: missing
+    remove_orphans: true
+  become: true

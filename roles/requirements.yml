@@ -1,0 +1,6 @@
+---
+roles:
+  - src: geerlingguy.docker
+    version: 7.4.1
+  - src: geerlingguy.pip
+    version: 3.0.3

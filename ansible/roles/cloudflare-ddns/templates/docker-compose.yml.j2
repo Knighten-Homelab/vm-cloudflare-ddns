@@ -1,0 +1,12 @@
+---
+services:
+{% for record in cloudflare_ddns_records %}
+  cloudflare-{{record.subdomain}}:
+    image: oznu/cloudflare-ddns:latest
+    restart: always
+    environment:
+      - API_KEY={{ cloudflare_api_key }}
+      - ZONE={{ record.zone }}
+      - SUBDOMAIN={{ record.subdomain }}
+      - PROXIED={{ record.proxied | lower }}
+{% endfor %}

@@ -1,0 +1,27 @@
+---
+- name: Create a user for Cloudflare DDNS
+  become: true
+  ansible.builtin.user:
+    name: ddns-user
+    comment: User to run Cloudflare DDNS
+    create_home: false
+    shell: /bin/false
+
+- name: Create directories docker-compose storage
+  become: true
+  ansible.builtin.file:
+    path: /opt/ddns
+    state: directory
+    owner: ddns-user
+    group: ddns-user
+    mode: "0755"
+
+- name: Create docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: "/opt/ddns/docker-compose.yml"
+    owner: ddns-user
+    group: ddns-user
+    mode: "0644"
+  notify:
+    - Compose Up or Restart
