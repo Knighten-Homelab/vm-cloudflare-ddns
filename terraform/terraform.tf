@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.9.8"
+  required_version = ">=1.9.8"
 
   backend "s3" {
     key                         = "cloudflare-ddns.tfstate"

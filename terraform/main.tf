@@ -38,7 +38,7 @@ data "vault_generic_secret" "ansible_sa_secrets" {
 }
 
 module "overseerr-vm" {
-  source = "github.com/Johnny-Knighten/terraform-homelab-pve-vm?ref=1.7.0"
+  source = "github.com/Johnny-Knighten/terraform-homelab-pve-vm?ref=1.7.1"
 
   pve_node = var.pve_node
   pve_name = var.vm_name
