@@ -37,7 +37,7 @@ data "vault_generic_secret" "ansible_sa_secrets" {
   path = var.vault_ansible_service_account_secrets_path
 }
 
-module "overseerr-vm" {
+module "cloudflare-ddns-vm" {
   source = "github.com/Johnny-Knighten/terraform-homelab-pve-vm?ref=1.7.1"
 
   pve_node = var.pve_node
