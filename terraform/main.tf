@@ -85,12 +85,12 @@ module "cloudflare-ddns-vm" {
   pve_disk_size             = "15G"
   pve_disk_storage_location = var.vm_disk_store_pool
 
-  pdns_zone        = "homelab.lan"
+  pdns_zone        = "knighten.io"
   pdns_record_name = var.dns_record_name
 
   awx_organization     = "Homelab"
-  awx_inventory        = "Homelab Endpoints"
-  awx_host_groups      = ["proxmox-hosts", "docker-hosts", "ipa_managed_clients"]
+  awx_inventory        = "Homelab"
+  awx_host_groups      = ["proxmox-hosts", "ipa-managed-clients"]
   awx_host_name        = var.awx_host_name
   awx_host_description = var.awx_host_description
 }
