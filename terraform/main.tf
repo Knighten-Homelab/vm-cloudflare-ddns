@@ -85,7 +85,7 @@ module "cloudflare-ddns-vm" {
   pve_disk_size             = "15G"
   pve_disk_storage_location = var.vm_disk_store_pool
 
-  pdns_zone        = "knighten.io"
+  pdns_zone        = var.dns_zone
   pdns_record_name = var.dns_record_name
 
   awx_organization     = var.awx_org

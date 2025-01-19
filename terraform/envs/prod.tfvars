@@ -19,6 +19,7 @@ vm_disk_store_pool="local-zfs"
 
 pdns_url="http://dns.knighten.io:8080/"
 dns_record_name="cloudflare-ddns"
+dns_zone="knighten.io"
 
 awx_url="https://awx.knighten.io/"
 awx_host_name="cloudflare-ddns"

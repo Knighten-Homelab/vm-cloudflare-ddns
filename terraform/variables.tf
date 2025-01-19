@@ -111,6 +111,11 @@ variable "dns_record_name" {
   description = "Name of the DNS record to create"
 }
 
+variable "dns_zone" {
+  type = string
+  description = "DNS zone where the A record will be created"
+}
+
 ####################
 # AWX Related Vars #
 ####################
