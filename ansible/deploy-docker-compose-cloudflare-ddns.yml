@@ -13,7 +13,7 @@
         ipaclient_domain: homelab.lan
         ipaclient_realm: HOMELAB.LAN
         ipaclient_servers: ipa.homelab.lan
-        ipaclient_mkhomedir: yes
+        ipaclient_mkhomedir: true
     - role: geerlingguy.pip
       vars:
         pip_install_packages:
