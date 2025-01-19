@@ -14,6 +14,7 @@
           - host is defined
           - hostname is defined
           - host_groups is defined
+          - job_template_credentials is defined
           - ipaclient_domain is defined
           - ipaclient_realm is defined
           - ipaclient_servers is defined
@@ -95,10 +96,7 @@
         project: Homelab - Cloudflare DDNS
         playbook: ansible/deploy-docker-compose-cloudflare-ddns.yml
         become_enabled: true
-        credentials:
-          - Ansible Service Account - Homelab
-          - Cloudflare - knighten.io Zone Edit API Key
-          - FreeIPA - Homelab Join Secrets
+        credentials: "{{ job_template_credentials }}"
         extra_vars:
           host: "{{ host }}"
           cloudflare_ddns_records: "{{ cloudflare_ddns_records }}"
