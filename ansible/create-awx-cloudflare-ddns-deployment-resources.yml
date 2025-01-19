@@ -9,6 +9,9 @@
     awx_git_credential: "Github - AWX SSH Key"
     project_branch: "main"
     target_host_fqdn: "cloudflare-ddns.knighten.io"
+    host_groups:
+      - "proxmox-hosts"
+      - "ipa-managed-clients"
     cloudflare_ddns_records:
       - zone: "knighten.io"
         subdomain: "game"
@@ -64,6 +67,18 @@
         description: Cloudflare DDNS VM
         inventory: "{{ awx_target_inv }}"
         state: present
+        variables:
+          hostname: "{{ target_host_fqdn }}"
+
+    - name: Added host to groups
+      awx.awx.group:
+        inventory: "{{ awx_target_inv }}"
+        preserve_existing_hosts: true
+        preserve_existing_children: true
+        hosts:
+          - cloudflare-ddns
+        name: "{{ item }}"
+      loop: "{{ host_groups }}"
 
     - name: Create project
       awx.awx.project:
