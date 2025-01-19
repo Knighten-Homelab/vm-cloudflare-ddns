@@ -15,7 +15,7 @@ services:
   cloudflare-ddns-non-proxied:
     image: favonia/cloudflare-ddns:1.15.1
     restart: always
-    "{{ user_info.uid }}:{{ user_info.uid }}"
+    user: "{{ user_info.uid }}:{{ user_info.uid }}"
     environment:
       - DOMAINS={{ cloudflare_ddns_non_proxied_domains | join(',') }}
       - PROXIED=false
