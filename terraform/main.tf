@@ -48,7 +48,7 @@ module "cloudflare-ddns-vm" {
   pve_full_clone = true
   pve_template   = "debian-12-cloud-init-template"
 
-  pve_boot_on_start = true
+  pve_boot_on_start   = true
   pve_startup_options = "order=0,up=30"
 
   pve_use_ci             = true
@@ -88,9 +88,51 @@ module "cloudflare-ddns-vm" {
   pdns_zone        = "knighten.io"
   pdns_record_name = var.dns_record_name
 
-  awx_organization     = "Homelab"
-  awx_inventory        = "Homelab"
+  awx_organization     = var.awx_org
+  awx_inventory        = var.awx_inventory
   awx_host_groups      = ["proxmox-hosts", "ipa-managed-clients"]
   awx_host_name        = var.awx_host_name
   awx_host_description = var.awx_host_description
+}
+
+data "awx_organization" "target-org" {
+  name = var.awx_org
+}
+
+resource "awx_project" "cloudflare-ddns-project" {
+  name                 = "Homelab - Cloudflare DDNS"
+  scm_type             = "git"
+  scm_url              = "git@github.com:Johnny-Knighten/homelab-cloudflare-ddns.git"
+  scm_branch           = var.awx_project_git_branch
+  scm_update_on_launch = false
+  scm_credential_id    = var.awx_github_scm_cred_id
+  organization_id      = data.awx_organization.target-org.id
+}
+
+data "awx_inventory" "target-inv" {
+  name            = var.awx_inventory
+  organization_id = data.awx_organization.target-org.id
+}
+
+resource "awx_job_template" "cf-ddns-deploy-template" {
+  name           = "Deploy - Cloudflare DDNS (Containerized)"
+  job_type       = "run"
+  inventory_id   = data.awx_inventory.target-inv.id
+  project_id     = awx_project.cloudflare-ddns-project.id
+  playbook       = "ansible/deploy-docker-compose-cloudflare-ddns.yml"
+  become_enabled = true
+  extra_vars     = <<YAML
+---
+host: ${var.awx_host_name}
+vault_ipaadmin_password: '{{ ipaadmin_principal }}'
+vault_ipaclient_password: '{{ ipaadmin_password }}'
+cloudflare_ddns_records: 
+${yamlencode(var.awx_cloudflare_ddns_records)}
+YAML
+}
+
+resource "awx_job_template_credential" "required-deploy-creds" {
+  for_each        = var.awx_deploy_job_required_creds
+  job_template_id = awx_job_template.cf-ddns-deploy-template.id
+  credential_id   = each.value
 }
