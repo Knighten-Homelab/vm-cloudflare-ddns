@@ -124,8 +124,7 @@ resource "awx_job_template" "cf-ddns-deploy-template" {
   extra_vars     = <<YAML
 ---
 host: ${var.awx_host_name}
-vault_ipaadmin_password: '{{ ipaadmin_principal }}'
-vault_ipaclient_password: '{{ ipaadmin_password }}'
+fqdn: ${var.dns_record_name}.${var.dns_zone}
 cloudflare_ddns_records: 
 ${yamlencode(var.awx_cloudflare_ddns_records)}
 YAML

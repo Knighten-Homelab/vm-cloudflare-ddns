@@ -7,15 +7,15 @@
   roles:
     - role: homelab.common_roles.set_hostname
       vars:
-        set_hostname_hostname: ddns.homelab.lan
+        set_hostname_hostname: "{{ fqdn }}"
     - role: freeipa.ansible_freeipa.ipaclient
       vars:
         ipaclient_domain: homelab.lan
         ipaclient_realm: HOMELAB.LAN
         ipaclient_servers: ipa.homelab.lan
         ipaclient_mkhomedir: yes
-        ipaadmin_password: "{{ vault_ipaadmin_password }}"
-        ipaclient_password: "{{ vault_ipaclient_password }}"
+        ipaadmin_principal: "{{ ipaadmin_principal }}"
+        ipaadmin_password: "{{ ipaadmin_password }}"
     - role: geerlingguy.pip
       vars:
         pip_install_packages:
