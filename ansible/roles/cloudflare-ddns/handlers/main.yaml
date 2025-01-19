@@ -3,7 +3,7 @@
   community.docker.docker_compose_v2:
     project_src: "{{ app_path }}"
     state: present
-    recreate: auto
+    recreate: always
     pull: missing
     remove_orphans: true
   become: true

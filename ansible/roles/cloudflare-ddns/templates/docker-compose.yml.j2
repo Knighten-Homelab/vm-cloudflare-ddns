@@ -1,12 +1,27 @@
 ---
 services:
-{% for record in cloudflare_ddns_records %}
-  cloudflare-{{record.subdomain}}:
-    image: oznu/cloudflare-ddns:latest
+  cloudflare-ddns-proxied:
+    image: favonia/cloudflare-ddns:1.15.1
     restart: always
     environment:
-      - API_KEY={{ cloudflare_api_key }}
-      - ZONE={{ record.zone }}
-      - SUBDOMAIN={{ record.subdomain }}
-      - PROXIED={{ record.proxied | lower }}
-{% endfor %}
+      - DOMAINS={{ cloudflare_ddns_proxied_domains | join(',') }}
+      - PROXIED=true
+      - IP6_PROVIDER=none
+      - CLOUDFLARE_API_TOKEN_FILE=/run/secrets/cf-token
+    secrets:
+      - cf-token
+  
+  cloudflare-ddns-non-proxied:
+    image: favonia/cloudflare-ddns:1.15.1
+    restart: always
+    environment:
+      - DOMAINS={{ cloudflare_ddns_non_proxied_domains | join(',') }}
+      - PROXIED=false
+      - IP6_PROVIDER=none
+      - CLOUDFLARE_API_TOKEN_FILE=/run/secrets/cf-token
+    secrets:
+      - cf-token
+  
+secrets:
+  cf-token:
+    file: {{ app_path }}/token

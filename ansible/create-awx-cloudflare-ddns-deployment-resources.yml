@@ -18,7 +18,8 @@
           - ipaclient_domain is defined
           - ipaclient_realm is defined
           - ipaclient_servers is defined
-          - cloudflare_ddns_records is defined
+          - cloudflare_ddns_proxied_domains is defined
+          - cloudflare_ddns_non_proxied_domains is defined
         fail_msg: "Required variables are missing. Please provide them using --extra-vars."
 
     - name: Verify that the AWX credentials are provided as environment variables
@@ -67,7 +68,8 @@
         credentials: "{{ job_template_credentials }}"
         extra_vars:
           host: "{{ host }}"
-          cloudflare_ddns_records: "{{ cloudflare_ddns_records }}"
+          cloudflare_ddns_proxied_domains: "{{ cloudflare_ddns_proxied_domains }}"
+          cloudflare_ddns_non_proxied_domains: "{{ cloudflare_ddns_non_proxied_domains }}"
           ipaclient_domain: "{{ ipaclient_domain }}"
           ipaclient_realm: "{{ ipaclient_realm }}"
           ipaclient_servers: "{{ ipaclient_servers }}"
