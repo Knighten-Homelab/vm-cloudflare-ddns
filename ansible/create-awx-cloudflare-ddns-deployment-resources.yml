@@ -26,38 +26,6 @@
         msg: AWX credentials are missing. Ensure CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD are set as environment variables.
       when: not (lookup('env', 'CONTROLLER_HOST') and lookup('env', 'CONTROLLER_USERNAME') and lookup('env', 'CONTROLLER_PASSWORD'))
 
-    - name: Check if the organization exists
-      ansible.builtin.set_fact:
-        org_exists: >-
-          {{
-            lookup(
-              'awx.awx.controller_api',
-              'organizations',
-              query_params={'name': awx_target_org}
-            )
-          }}
-
-    - name: Fail if the organization does not exist
-      ansible.builtin.fail:
-        msg: AWX Organization '{{ awx_target_org }}' does not exist.
-      when: org_exists | length == 0
-
-    - name: Check if the inventory exists
-      ansible.builtin.set_fact:
-        inv_exists: >-
-          {{
-            lookup(
-              'awx.awx.controller_api',
-              'inventories',
-              query_params={'name': awx_target_org}
-            )
-          }}
-
-    - name: Fail if the inventory does not exist
-      ansible.builtin.fail:
-        msg: AWX Inventory '{{ awx_target_inv }}' does not exist.
-      when: inv_exists | length == 0
-
     - name: Create host resource
       awx.awx.host:
         name: "{{ host }}"
