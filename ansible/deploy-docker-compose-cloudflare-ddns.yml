@@ -14,8 +14,6 @@
         ipaclient_realm: HOMELAB.LAN
         ipaclient_servers: ipa.homelab.lan
         ipaclient_mkhomedir: yes
-        ipaadmin_principal: "{{ ipaadmin_principal }}"
-        ipaadmin_password: "{{ ipaadmin_password }}"
     - role: geerlingguy.pip
       vars:
         pip_install_packages:
