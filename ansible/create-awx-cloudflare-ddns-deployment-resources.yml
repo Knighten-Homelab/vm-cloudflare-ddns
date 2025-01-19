@@ -105,5 +105,4 @@
           - FreeIPA - Homelab Join Secrets
         extra_vars:
           host: cloudflare-ddns
-          fqdn: "{{ target_host_fqdn }}"
           cloudflare_ddns_records: "{{ cloudflare_ddns_records }}"

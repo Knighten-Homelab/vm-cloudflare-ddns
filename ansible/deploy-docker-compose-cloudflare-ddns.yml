@@ -7,7 +7,7 @@
   roles:
     - role: homelab.common_roles.set_hostname
       vars:
-        set_hostname_hostname: "{{ fqdn }}"
+        set_hostname_hostname: "{{ hostname }}"
     - role: freeipa.ansible_freeipa.ipaclient
       vars:
         ipaclient_domain: homelab.lan
