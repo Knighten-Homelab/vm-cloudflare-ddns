@@ -60,7 +60,7 @@ terraform apply -var-file=envs/example.tfvars
 
 #### Example - Partial Backend Config
 
-For this project I chose to use a [partial backend configuration](https://developer.hashicorp.com/terraform/language/backend#partial-configuration) to configure my remote S3 backend. This allows you to create a partially complete backend config (see [terraform/terraform.tf](terraform/terraform.tf) for example), and complete the rest of the config in a partial config file.
+For this project I chose to use a [partial backend configuration](https://developer.hashicorp.com/terraform/language/backend#partial-configuration) to configure my remote S3 backend. This allows you to create a partially complete backend config (see [infra/terraform.tf](infra/terraform.tf) for example), and complete the rest of the config in a partial config file.
 
 Here are some alternative options worth considering:
 
