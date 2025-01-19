@@ -117,6 +117,25 @@ dns_record_name="test"
 awx_url="http://awx.local/"
 awx_host_name="test"
 awx_host_description="Test VM"
+awx_project_git_branch="main"
+awx_github_scm_cred_id=4
+awx_deploy_job_required_creds={
+    ansible_sa_ssh = 1
+    freeipa_secrets = 2
+    cloudflare_api_key = 3
+}
+awx_cloudflare_ddns_records = [
+  {
+    zone      = "example.io"
+    subdomain = "test"
+    proxied   = false
+  },
+  {
+    zone      = "example.io"
+    subdomain = "test-proxied"
+    proxied   = true
+  }
+]
 ```
 
 #### Expected Hashicorp Vault Secrets
