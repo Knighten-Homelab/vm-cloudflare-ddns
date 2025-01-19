@@ -6,6 +6,8 @@
     comment: User to run Cloudflare DDNS
     create_home: false
     shell: /bin/false
+  register:
+    user_info
 
 - name: Create directories docker-compose storage
   become: true
@@ -32,6 +34,6 @@
     content: "{{ cloudflare_api_key }}"
     owner: cloudflare
     group: cloudflare
-    mode: "0400"
+    mode: "0440"
   notify:
     - Compose Up or Restart
