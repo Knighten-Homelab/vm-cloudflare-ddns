@@ -1,0 +1,94 @@
+---
+- name: Create AWX Resources For Cloudflare DDNS Deployment
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    awx_target_org: "Homelab"
+    awx_target_inv: "Homelab"
+    awx_git_credential: "Github - AWX SSH Key"
+    project_branch: "main"
+    target_host_fqdn: "cloudflare-ddns.knighten.io"
+    cloudflare_ddns_records:
+      - zone: "knighten.io"
+        subdomain: "game"
+        proxied: false
+      - zone: "knighten.io"
+        subdomain: "ha"
+        proxied: true
+      - zone: "knighten.io"
+        subdomain: "overseerr"
+        proxied: true
+
+  tasks:
+    - name: Verify that the AWX credentials are provided
+      ansible.builtin.fail:
+        msg: AWX credentials are missing. Ensure CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD are set as environment variables.
+      when: not (lookup('env', 'CONTROLLER_HOST') and lookup('env', 'CONTROLLER_USERNAME') and lookup('env', 'CONTROLLER_PASSWORD'))
+
+    - name: Check if the organization exists
+      ansible.builtin.set_fact:
+        org_exists: >-
+          {{
+            lookup(
+              'awx.awx.controller_api',
+              'organizations',
+              query_params={'name': awx_target_org}
+            )
+          }}
+
+    - name: Fail if the organization does not exist
+      ansible.builtin.fail:
+        msg: AWX Organization '{{ awx_target_org }}' does not exist.
+      when: org_exists | length == 0
+
+    - name: Check if the inventory exists
+      ansible.builtin.set_fact:
+        inv_exists: >-
+          {{
+            lookup(
+              'awx.awx.controller_api',
+              'inventories',
+              query_params={'name': awx_target_org}
+            )
+          }}
+
+    - name: Fail if the inventory does not exist
+      ansible.builtin.fail:
+        msg: AWX Inventory '{{ awx_target_inv }}' does not exist.
+      when: inv_exists | length == 0
+
+    - name: Create host resource
+      awx.awx.host:
+        name: cloudflare-ddns
+        description: Cloudflare DDNS VM
+        inventory: "{{ awx_target_inv }}"
+        state: present
+
+    - name: Create project
+      awx.awx.project:
+        name: Homelab - Cloudflare DDNS
+        state: present
+        organization: "{{ awx_target_org }}"
+        scm_type: git
+        scm_url: git@github.com:Johnny-Knighten/homelab-cloudflare-ddns.git
+        scm_branch: "{{ project_branch }}"
+        scm_update_on_launch: false
+        scm_credential: "{{ awx_git_credential }}"
+
+    - name: Create job template
+      awx.awx.job_template:
+        name: Deploy - Cloudflare DDNS (Containerized)
+        job_type: run
+        inventory: "{{ awx_target_inv }}"
+        project: Homelab - Cloudflare DDNS
+        playbook: ansible/deploy-docker-compose-cloudflare-ddns.yml
+        become_enabled: true
+        credentials:
+          - Ansible Service Account - Homelab
+          - Cloudflare - knighten.io Zone Edit API Key
+          - FreeIPA - Homelab Join Secrets
+        extra_vars:
+          host: cloudflare-ddns
+          fqdn: "{{ target_host_fqdn }}"
+          cloudflare_ddns_records: "{{ cloudflare_ddns_records }}"

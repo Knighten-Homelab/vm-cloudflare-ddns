@@ -6,3 +6,4 @@ collections:
     version: 1.3.0
   - name: community.docker
   - name: freeipa.ansible_freeipa
+  - name: awx.awx
