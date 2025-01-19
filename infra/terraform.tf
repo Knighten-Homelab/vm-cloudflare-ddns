@@ -20,9 +20,5 @@ terraform {
       source  = "pan-net/powerdns"
       version = "1.5.0"
     }
-    awx = {
-      source  = "denouche/awx"
-      version = "0.19.0"
-    }
   }
 }

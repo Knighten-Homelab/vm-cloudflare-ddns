@@ -22,7 +22,6 @@ Terraform is used to deploy a set of resources needed for the Cloudflare DDNS so
 
 1. Create a VM that uses a [customized Debian Cloud-Init image](https://github.com/Johnny-Knighten/ansible-homelab-proxmox-cloud-init-templates-playbooks/tree/main) on a Proxmox cluster
 2. Create a DNS A-Record on a local PowerDNS server
-3. Register the VM host on AWX to assist with Ansible automation
 
 After the above resources are created, we then use AWX to run a Ansible playbook on our new VM that will:
 
@@ -46,7 +45,6 @@ Terraform is used to deploy all infrastructure for this project. I use my [terra
 1. Pulls required secrets from Hashicorp Vault
 2. Creates the VM on Proxmox
 3. Creates the A-Record on PowerDNS
-4. Adds a host record for the VM on AWX
 
 ### Deployment Example
 
@@ -93,7 +91,6 @@ vault_url="https://vault.local:8200"
 vault_skip_tls_verify=false
 vault_pve_secrets_path="kv/pve-secrets"
 vault_pdns_secrets_path="kv/pdns-secrets"
-vault_awx_secrets_path="kv/awx-secrets"
 vault_ansible_service_account_secrets_path="kv/ansible-service-account-secrets"
 
 /* Proxmox/VM Vars */
@@ -112,30 +109,7 @@ vm_disk_store_pool="local-lvm"
 /* PDNS Vars */
 pdns_url="http://dns.local:8080/"
 dns_record_name="test"
-
-/* Vault Vars */
-awx_url="http://awx.local/"
-awx_host_name="test"
-awx_host_description="Test VM"
-awx_project_git_branch="main"
-awx_github_scm_cred_id=4
-awx_deploy_job_required_creds={
-    ansible_sa_ssh = 1
-    freeipa_secrets = 2
-    cloudflare_api_key = 3
-}
-awx_cloudflare_ddns_records = [
-  {
-    zone      = "example.io"
-    subdomain = "test"
-    proxied   = false
-  },
-  {
-    zone      = "example.io"
-    subdomain = "test-proxied"
-    proxied   = true
-  }
-]
+dns_zone="example.com
 ```
 
 #### Expected Hashicorp Vault Secrets
@@ -147,7 +121,5 @@ Here are the expected secrets under each path variable.
 | `var.vault_pve_secrets_path`           | `username`                   | Proxmox API username                          | Proxmox                       |
 |                                        | `password`                   | Proxmox API password                          | Proxmox                       |
 | `var.vault_pdns_secrets_path`          | `terraform_api_key`          | API key for PowerDNS                          | PowerDNS                      |
-| `var.vault_awx_secrets_path`           | `terraform-user`             | AWX username                                  | AWX                           |
-|                                        | `terraform-password`         | AWX password                                  | AWX                           |
-| `var.vault_ansible_service_account_secrets_path` | `ssh-key-private`           | Private SSH key for the Ansible service account | Proxmox Cloud Init & AWX      |
+| `var.vault_ansible_service_account_secrets_path` | `ssh-key-private`           | Private SSH key for the Ansible service account | Proxmox Cloud Init      |
 |                                        | `ssh-key-public`             | Public SSH key for the Ansible service account | Proxmox Cloud Init            |

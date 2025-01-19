@@ -23,22 +23,12 @@ provider "powerdns" {
   api_key    = data.vault_generic_secret.pdns_secrets.data["terraform_api_key"]
 }
 
-data "vault_generic_secret" "awx_secrets" {
-  path = var.vault_awx_secrets_path
-}
-
-provider "awx" {
-  hostname = var.awx_url
-  username = data.vault_generic_secret.awx_secrets.data["terraform-user"]
-  password = data.vault_generic_secret.awx_secrets.data["terraform-password"]
-}
-
 data "vault_generic_secret" "ansible_sa_secrets" {
   path = var.vault_ansible_service_account_secrets_path
 }
 
 module "cloudflare-ddns-vm" {
-  source = "github.com/Johnny-Knighten/terraform-homelab-pve-vm?ref=1.7.1"
+  source = "github.com/Johnny-Knighten/terraform-homelab-pve-vm?ref=2.0.0"
 
   pve_node = var.pve_node
   pve_name = var.vm_name
@@ -87,10 +77,4 @@ module "cloudflare-ddns-vm" {
 
   pdns_zone        = var.dns_zone
   pdns_record_name = var.dns_record_name
-
-  awx_organization     = var.awx_org
-  awx_inventory        = var.awx_inventory
-  awx_host_groups      = ["proxmox-hosts", "ipa-managed-clients"]
-  awx_host_name        = var.awx_host_name
-  awx_host_description = var.awx_host_description
 }

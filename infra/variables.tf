@@ -28,11 +28,6 @@ variable "vault_pdns_secrets_path" {
   description = "Path to the secrets in Vault for PowerDNS"
 }
 
-variable "vault_awx_secrets_path" {
-  type        = string
-  description = "Path to the secrets in Vault for AWX"
-}
-
 variable "vault_ansible_service_account_secrets_path" {
   type        = string
   description = "Path to the secrets in Vault for the Ansible service account"
@@ -114,60 +109,4 @@ variable "dns_record_name" {
 variable "dns_zone" {
   type = string
   description = "DNS zone where the A record will be created"
-}
-
-####################
-# AWX Related Vars #
-####################
-
-variable "awx_url" {
-  type        = string
-  description = "AWX API URL"
-}
-
-variable "awx_org" {
-  type        = string
-  description = "Name of awx organization to assign resources to"
-  default     = "Homelab"
-}
-
-variable "awx_inventory" {
-  type        = string
-  description = "Name of inventory to assign resources to"
-  default     = "Homelab"
-}
-
-variable "awx_host_name" {
-  type        = string
-  description = "Name of the host in AWX"
-}
-
-variable "awx_host_description" {
-  type        = string
-  description = "Description of the host in AWX"
-}
-
-variable "awx_project_git_branch" {
-  type        = string
-  description = "The git branch the project should pull from"
-  default     = "main"
-}
-
-variable "awx_github_scm_cred_id" {
-  type        = number
-  description = "Id of scm credential that has can pull required git repo"
-}
-
-variable "awx_deploy_job_required_creds" {
-  type        = map(number)
-  description = "A map of required credential ids needed for the AWX deploy job"
-}
-
-variable "awx_cloudflare_ddns_records" {
-  description = "A list of Cloudflare DDNS records with zone, subdomain, and proxied settings."
-  type = list(object({
-    zone      = string
-    subdomain = string
-    proxied   = bool
-  }))
 }
