@@ -10,7 +10,7 @@
 - name: Create directories docker-compose storage
   become: true
   ansible.builtin.file:
-    path: /opt/ddns
+    path: "{{ app_path }}"
     state: directory
     owner: ddns-user
     group: ddns-user

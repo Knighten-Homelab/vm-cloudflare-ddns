@@ -1,6 +1,2 @@
 ---
-main_dir: /opt/cloudflare
-cloudflare_ddns_records:
-  - zone: test.com
-    subdomain: test
-    proxied: false
+app_path: /opt/cloudflare
