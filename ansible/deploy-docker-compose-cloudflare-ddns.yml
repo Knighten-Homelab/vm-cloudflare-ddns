@@ -4,15 +4,26 @@
   become: true
   vars:
     host: localhost
+  tasks:
+    - name: Ensure required vars are present
+      ansible.builtin.assert:
+        that:
+          - host is defined
+          - hostname is defined
+          - ipaadmin_principal is defined
+          - ipaadmin_password is defined
+          - ipaclient_domain is defined
+          - ipaclient_realm is defined
+          - ipaclient_servers is defined
+          - cloudflare_api_key is defined
+          - cloudflare_ddns_records is defined
+        fail_msg: "Required variables are missing. Please provide them using --extra-vars."
   roles:
     - role: homelab.common_roles.set_hostname
       vars:
         set_hostname_hostname: "{{ hostname }}"
     - role: freeipa.ansible_freeipa.ipaclient
       vars:
-        ipaclient_domain: homelab.lan
-        ipaclient_realm: HOMELAB.LAN
-        ipaclient_servers: ipa.homelab.lan
         ipaclient_mkhomedir: true
     - role: geerlingguy.pip
       vars:

@@ -3,29 +3,24 @@
   hosts: localhost
   gather_facts: false
 
-  vars:
-    awx_target_org: "Homelab"
-    awx_target_inv: "Homelab"
-    awx_git_credential: "Github - AWX SSH Key"
-    project_branch: "main"
-    host: "cloudflare-ddns"
-    hostname: "cloudflare-ddns.knighten.io"
-    host_groups:
-      - "proxmox-hosts"
-      - "ipa-managed-clients"
-    cloudflare_ddns_records:
-      - zone: "knighten.io"
-        subdomain: "game"
-        proxied: false
-      - zone: "knighten.io"
-        subdomain: "ha"
-        proxied: true
-      - zone: "knighten.io"
-        subdomain: "overseerr"
-        proxied: true
-
   tasks:
-    - name: Verify that the AWX credentials are provided
+    - name: Ensure required vars are present
+      ansible.builtin.assert:
+        that:
+          - awx_target_org is defined
+          - awx_target_inv is defined
+          - awx_git_credential is defined
+          - awx_project_branch is defined
+          - host is defined
+          - hostname is defined
+          - host_groups is defined
+          - ipaclient_domain is defined
+          - ipaclient_realm is defined
+          - ipaclient_servers is defined
+          - cloudflare_ddns_records is defined
+        fail_msg: "Required variables are missing. Please provide them using --extra-vars."
+
+    - name: Verify that the AWX credentials are provided as environment variables
       ansible.builtin.fail:
         msg: AWX credentials are missing. Ensure CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD are set as environment variables.
       when: not (lookup('env', 'CONTROLLER_HOST') and lookup('env', 'CONTROLLER_USERNAME') and lookup('env', 'CONTROLLER_PASSWORD'))
@@ -88,7 +83,7 @@
         organization: "{{ awx_target_org }}"
         scm_type: git
         scm_url: git@github.com:Johnny-Knighten/homelab-cloudflare-ddns.git
-        scm_branch: "{{ project_branch }}"
+        scm_branch: "{{ awx_project_branch }}"
         scm_update_on_launch: false
         scm_credential: "{{ awx_git_credential }}"
 
@@ -107,3 +102,6 @@
         extra_vars:
           host: "{{ host }}"
           cloudflare_ddns_records: "{{ cloudflare_ddns_records }}"
+          ipaclient_domain: "{{ ipaclient_domain }}"
+          ipaclient_realm: "{{ ipaclient_realm }}"
+          ipaclient_servers: "{{ ipaclient_servers }}"
