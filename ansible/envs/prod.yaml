@@ -1,0 +1,21 @@
+awx_target_org: "Homelab"
+awx_target_inv: "Homelab"
+awx_git_credential: "Github - AWX SSH Key"
+awx_project_branch: "main"
+host: cloudflare-ddns
+hostname: "cloudflare-ddns.knighten.io"
+host_groups:
+  - "proxmox-hosts"
+  - "ipa-managed-clients"
+job_template_credentials:
+  - Ansible Service Account - Homelab
+  - Cloudflare - knighten.io Zone Edit API Key
+  - FreeIPA - Homelab Join Secrets
+ipaclient_domain: homelab.lan
+ipaclient_realm: HOMELAB.LAN
+ipaclient_servers: ipa.homelab.lan
+cloudflare_ddns_proxied_domains:
+  - ha.knighten.io
+  - overseerr.knighten.io
+cloudflare_ddns_non_proxied_domains:
+  - game.knighten.io
