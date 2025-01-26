@@ -15,6 +15,7 @@ This repository contains Terraform and Ansible code to deploy a Cloudflare Dynam
     * Example - Tfvars File
     * Expected Hashicorp Vault Secrets
 * Application Deployment (TODO)
+* CI/CD (TODO)
 
 ## Overview
 
@@ -123,3 +124,79 @@ Here are the expected secrets under each path variable.
 | `var.vault_pdns_secrets_path`          | `terraform_api_key`          | API key for PowerDNS                          | PowerDNS                      |
 | `var.vault_ansible_service_account_secrets_path` | `ssh-key-private`           | Private SSH key for the Ansible service account | Proxmox Cloud Init      |
 |                                        | `ssh-key-public`             | Public SSH key for the Ansible service account | Proxmox Cloud Init            |
+
+## Application Deployment
+
+The deployment of the Cloudflare DDNS solution is handled with AWX and Ansible. There are 3 major Ansible artifacts:
+
+1. AWX resource creation playbook
+2. The cloudflare-ddns role
+3. A deployment playbook
+
+The cloudflare-ddns role creates a service account and a docker-compose file that uses a container to handle Cloudflare DDNS. A deployment playbook is designed to apply multiple roles including the cloudflare-ddns and other dependency roles (docker, freeipa client, ...). Finally AWX is used to launch the deployment playbook.
+
+### Running AWX Resource Creation Playbook
+
+Before running this playbook you need to install the required Ansible dependencies. You have two ways to do this:
+
+```bash
+# Install just the awx.awx collection thats required to run the playbook
+ansible-galaxy collection install awx.awx
+
+# To install all of the project's Ansible dependencies
+ansible-galaxy collection install -r ./collections/requirements.yml
+```
+
+Here is an example command for running the playbook that creates all AWX resources:
+
+```bash
+# From within the ansible directory
+ansible-playbook -i localhost create-awx-cloudflare-ddns-deployment-resources.yml \
+  -e awx_target_org="Homelab" \
+  -e awx_target_inv="Homelab" \
+  -e awx_git_credential="Github - AWX SSH Key" \
+  -e project_branch="main" \
+  -e target_host_fqdn="cloudflare-ddns.knighten.io" \
+  -e host_groups='["proxmox-hosts", "ipa-managed-clients"]' \
+  -e cloudflare_ddns_records='[{"zone":"knighten.io","subdomain":"game","proxied":false}]'
+```
+
+If prefered you can create variable file like so:
+
+```yml
+awx_target_org: "Homelab"
+awx_target_inv: "Homelab"
+awx_git_credential: "Github - AWX SSH Key"
+project_branch: "main"
+target_host_fqdn: "cloudflare-ddns.knighten.io"
+host_groups:
+  - "proxmox-hosts"
+  - "ipa-managed-clients"
+cloudflare_ddns_records:
+  - zone: "knighten.io"
+    subdomain: "game"
+    proxied: false
+```
+
+Then run the playbook like this:
+
+```bash
+# From inside the ansible directory
+ansible-playbook -i localhost create-awx-cloudflare-ddns-deployment-resources.yml -e @vars.yml
+```
+
+### Deployment Without AWX
+
+The first step to execute the deployment without AWX is to install all required Ansible roles and collections. This can be done like so:
+
+```bash
+ansible-galaxy collection install -r ./collections/requirements.yml
+ansible-galaxy install -r ./roles/requirements.yml
+```
+
+Then to launch the ansible-playbook you would run the following command:
+
+``` bash
+# From inside the ansible directory
+
+```
