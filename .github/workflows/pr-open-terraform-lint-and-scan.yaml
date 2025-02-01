@@ -14,7 +14,9 @@ jobs:
   lint-tf:
     runs-on: ubuntu-latest
     permissions:
-      contents: read  
+      contents: read
+    defaults:
+      working-directory: infra
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
