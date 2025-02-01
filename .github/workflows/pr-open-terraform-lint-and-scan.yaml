@@ -8,8 +8,7 @@ on:
       - opened
       - reopened
       - synchronize
-    paths:
-      - infra
+
 
 jobs:
   lint-tf:
