@@ -107,6 +107,6 @@ variable "dns_record_name" {
 }
 
 variable "dns_zone" {
-  type = string
+  type        = string
   description = "DNS zone where the A record will be created"
 }

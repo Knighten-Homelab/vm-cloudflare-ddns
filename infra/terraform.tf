@@ -20,5 +20,9 @@ terraform {
       source  = "pan-net/powerdns"
       version = "1.5.0"
     }
+    vault = {
+      source  = "hashicorp/vault"
+      version = "4.6.0"
+    }
   }
 }
