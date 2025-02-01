@@ -1,0 +1,49 @@
+---
+name: Lint & Scan - Terraform
+run-name: Terraform Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - infra
+
+jobs:
+  lint-tf:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      - name: Terraform Init
+        env:
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Terraform fmt
+        run: terraform fmt -check
+        continue-on-error: false
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
+
+      - name: Run TFLint
+        run: tflint -f compact
