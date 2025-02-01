@@ -16,7 +16,8 @@ jobs:
     permissions:
       contents: read
     defaults:
-      working-directory: infra
+      run:
+        working-directory: infra
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
