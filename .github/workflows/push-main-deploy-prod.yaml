@@ -1,0 +1,51 @@
+---
+name: Deployment - Production
+run-name: Production Deployment for Push on ${{ github.ref_name }} ${{ github.run_number }}
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: read
+
+jobs:
+  apply-tf:
+    runs-on: github-arc-runners
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Node.js (Dependency For Other Action)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        env:
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+        run: |
+          terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
+
+      - name: Terraform Apply
+        env:
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
+        run: |
+          terraform apply -var-file=envs/prod.tfvars -auto-approve
