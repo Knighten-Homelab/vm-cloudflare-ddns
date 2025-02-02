@@ -44,7 +44,6 @@ jobs:
           AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
           TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
         run: |
           terraform apply -var-file=envs/prod.tfvars -auto-approve
