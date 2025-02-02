@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.0.0...1.1.0) (2025-02-02)
+
+### Features
+
+* gha terraform lint and sec scan ([#2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/2)) ([5ed8c49](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/5ed8c4979f0a23bf523c5dd5b0ddaf6e3600a90c))
+
 ## [1.0.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/...1.0.0) (2025-02-01)
 
 ### Bug Fixes
