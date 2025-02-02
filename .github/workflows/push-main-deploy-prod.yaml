@@ -4,6 +4,8 @@ run-name: Production Deployment for Push on ${{ github.ref_name }} ${{ github.ru
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - 'CHANGELOG.md'
 
