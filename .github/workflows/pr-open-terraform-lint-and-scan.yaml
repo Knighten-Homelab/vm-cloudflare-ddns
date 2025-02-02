@@ -9,7 +9,7 @@ on:
       - reopened
       - synchronize
     paths:
-      - infra
+      - infra/**
 
 jobs:
   lint-tf:
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (Dependency For Other Action)
+      - name: Install Node.js (Dependency For Other Action)
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -31,7 +31,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Setup TFLint
+      - name: Install TFLint
         uses: terraform-linters/setup-tflint@v4
 
       - name: Terraform Init
@@ -48,10 +48,32 @@ jobs:
 
       - name: Terraform fmt
         run: terraform fmt -check
-        continue-on-error: false
 
       - name: Terraform Validate
         run: terraform validate -no-color
 
       - name: Run TFLint
         run: tflint -f compact
+
+  security-scan-tf:
+    runs-on: github-arc-runners
+    needs:
+      - lint-tf
+    defaults:
+      run:
+        working-directory: infrastructure/environments/${{ matrix.environment }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          scan-type: "config"
+          scan-ref: "infra"
+          hide-progress: true
+          format: "sarif"
+          output: "trivy-results.sarif"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
