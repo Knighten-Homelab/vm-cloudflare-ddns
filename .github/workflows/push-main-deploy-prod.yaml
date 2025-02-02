@@ -37,4 +37,5 @@ jobs:
       - name: Terraform Apply
         env:
           TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
-        run: terraform apply -var-file=envs/prod.tfvars
+        run: |
+          terraform apply -var-file=envs/prod.tfvars -auto-approve
