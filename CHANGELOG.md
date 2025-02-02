@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.1.0...1.2.0) (2025-02-02)
+
+### Features
+
+* gha deploy prod tf on main push ([#3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/3)) ([daf8c72](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/daf8c727591bc7c83ea1eec9232f1ac8e56254ff))
+
 ## [1.1.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.0.0...1.1.0) (2025-02-02)
 
 ### Features
