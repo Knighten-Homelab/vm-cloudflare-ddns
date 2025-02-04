@@ -1,0 +1,18 @@
+---
+profile: production
+
+exclude_paths:
+  - envs/
+
+mock_modules:
+  - awx.awx.host
+  - awx.awx.group
+  - awx.awx.project
+  - awx.awx.job_template
+  - community.docker.docker_compose_v2
+
+mock_roles:
+  - geerlingguy.pip
+  - geerlingguy.docker
+  - homelab.common_roles.set_hostname
+  - freeipa.ansible_freeipa.ipaclient
