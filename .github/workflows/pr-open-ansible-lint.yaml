@@ -6,13 +6,6 @@ on:
   push:
     branches:
       - feat/**
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - reopened
-  #     - synchronize
-  #   paths:
-  #     - ansible/**
 
 jobs:
   lint-ansible:
