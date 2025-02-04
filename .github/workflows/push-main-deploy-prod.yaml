@@ -76,5 +76,5 @@ jobs:
         run: |
           ansible-playbook \
             -i localhost \
-            -e @vars.yml
-            create-awx-cloudflare-ddns-deployment-resources.yml
+            -e @envs/prod.yaml \
+            create-awx-cloudflare-ddns-deployment-resources.yaml
