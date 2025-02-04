@@ -1,0 +1,32 @@
+---
+name: Lint - Ansible
+run-name: Ansible Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint
+
+on:
+  push:
+    branches:
+      - feat/**
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - reopened
+  #     - synchronize
+  #   paths:
+  #     - ansible/**
+
+jobs:
+  lint-ansible:
+    runs-on: github-arc-runners
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ansible
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+    - name: Run ansible-lint
+      uses: ansible/ansible-lint@v25.1.1
+      with:
+        setup_python: "true"
