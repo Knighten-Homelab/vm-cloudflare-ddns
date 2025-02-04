@@ -52,7 +52,7 @@
         state: present
         organization: "{{ awx_target_org }}"
         scm_type: git
-        scm_url: https://github.com/Knighten-Homelab/ansible-common-roles.git
+        scm_url: git@github.com:Knighten-Homelab/vm-cloudflare-ddns.git
         scm_branch: "{{ awx_project_branch }}"
         scm_update_on_launch: false
         scm_credential: "{{ awx_git_credential }}"
