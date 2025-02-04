@@ -67,6 +67,9 @@ jobs:
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Ansible Playbook Dependencies
+        run: ansible-galaxy collection install awx.awx
+
       - name: Run AWX Resource Creation Playbook
         env:
           CONTROLLER_HOST: ${{ secrets.AWX_HOST }}
