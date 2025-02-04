@@ -4,8 +4,13 @@ run-name: Ansible Change Detected In PR ${{ github.event.number }} on ${{ github
 
 on:
   push:
-    branches:
-      - feat/**
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - ansible/**
 
 jobs:
   lint-ansible:
