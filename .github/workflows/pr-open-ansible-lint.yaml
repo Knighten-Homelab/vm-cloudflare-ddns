@@ -3,7 +3,6 @@ name: Lint - Ansible
 run-name: Ansible Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint
 
 on:
-  push:
   pull_request:
     types:
       - opened
