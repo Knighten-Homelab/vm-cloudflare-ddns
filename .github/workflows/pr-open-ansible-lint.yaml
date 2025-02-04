@@ -31,6 +31,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run ansible-lint
-        working-directory: ansible-lint
+        working-directory: ansible
         run: |
           ansible-lint -c .ansible-lint
