@@ -17,14 +17,18 @@ jobs:
     runs-on: github-arc-runners
     permissions:
       contents: read
-    defaults:
-      run:
-        working-directory: ansible
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Run ansible-lint
-        uses: ansible/ansible-lint@v25.1.1
+      - name: Install Python
+        uses: actions/setup-python@v5
         with:
-          setup_python: "true"
+          python-version: '3.13'
+
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run ansible-lint
+        run: |
+          ansible-lint
