@@ -33,4 +33,4 @@
     - role: geerlingguy.docker
       vars:
         docker_install_compose: true
-    - role: cloudflare-ddns
+    - role: cloudflare_ddns

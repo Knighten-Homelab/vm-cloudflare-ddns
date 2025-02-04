@@ -1,4 +1,4 @@
 ---
-app_path: /opt/cloudflare
+cloudflare_ddns_app_path: /opt/cloudflare
 cloudflare_ddns_proxied_domains: []
 cloudflare_ddns_non_proxied_domains: []

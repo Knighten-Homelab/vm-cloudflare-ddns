@@ -12,7 +12,7 @@
 - name: Create directories docker-compose storage
   become: true
   ansible.builtin.file:
-    path: "{{ app_path }}"
+    path: "{{ cloudflare_ddns_app_path }}"
     state: directory
     owner: cloudflare
     group: cloudflare
@@ -21,7 +21,7 @@
 - name: Create docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: "{{ app_path }}/docker-compose.yml"
+    dest: "{{ cloudflare_ddns_app_path }}/docker-compose.yml"
     owner: cloudflare
     group: cloudflare
     mode: "0644"
@@ -30,7 +30,7 @@
 
 - name: Create Cloudfalre API token file
   ansible.builtin.copy:
-    dest: "{{ app_path }}/token"
+    dest: "{{ cloudflare_ddns_app_path }}/token"
     content: "{{ cloudflare_api_key }}"
     owner: cloudflare
     group: cloudflare
