@@ -54,9 +54,6 @@ jobs:
       - apply-tf
     permissions:
       contents: read
-    defaults:
-      run:
-        working-directory: infra
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -75,6 +72,7 @@ jobs:
           CONTROLLER_HOST: ${{ secrets.AWX_HOST }}
           CONTROLLER_USERNAME: ${{ secrets.AWX_USER }}
           CONTROLLER_PASSWORD: ${{ secrets.AWX_PW }}
+        working-directory: ansible
         run: |
           ansible-playbook \
             -i localhost \
