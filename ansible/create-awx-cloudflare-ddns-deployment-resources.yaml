@@ -1,0 +1,75 @@
+---
+- name: Create AWX Resources For Cloudflare DDNS Deployment
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Ensure required vars are present
+      ansible.builtin.assert:
+        that:
+          - awx_target_org is defined
+          - awx_target_inv is defined
+          - awx_git_credential is defined
+          - awx_project_branch is defined
+          - host is defined
+          - hostname is defined
+          - host_groups is defined
+          - job_template_credentials is defined
+          - ipaclient_domain is defined
+          - ipaclient_realm is defined
+          - ipaclient_servers is defined
+          - cloudflare_ddns_proxied_domains is defined
+          - cloudflare_ddns_non_proxied_domains is defined
+        fail_msg: "Required variables are missing. Please provide them using --extra-vars."
+
+    - name: Verify that the AWX credentials are provided as environment variables
+      ansible.builtin.fail:
+        msg: AWX credentials are missing. Ensure CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD are set as environment variables.
+      when: not (lookup('env', 'CONTROLLER_HOST') and lookup('env', 'CONTROLLER_USERNAME') and lookup('env', 'CONTROLLER_PASSWORD'))
+
+    - name: Create host resource
+      awx.awx.host:
+        name: "{{ host }}"
+        description: Cloudflare DDNS VM
+        inventory: "{{ awx_target_inv }}"
+        state: present
+        variables:
+          hostname: "{{ hostname }}"
+
+    - name: Added host to groups
+      awx.awx.group:
+        inventory: "{{ awx_target_inv }}"
+        preserve_existing_hosts: true
+        preserve_existing_children: true
+        hosts:
+          - "{{ host }}"
+        name: "{{ item }}"
+      loop: "{{ host_groups }}"
+
+    - name: Create project
+      awx.awx.project:
+        name: Homelab - Cloudflare DDNS
+        state: present
+        organization: "{{ awx_target_org }}"
+        scm_type: git
+        scm_url: git@github.com:Knighten-Homelab/vm-cloudflare-ddns.git
+        scm_branch: "{{ awx_project_branch }}"
+        scm_update_on_launch: false
+        scm_credential: "{{ awx_git_credential }}"
+
+    - name: Create job template
+      awx.awx.job_template:
+        name: Deploy - Cloudflare DDNS (Containerized)
+        job_type: run
+        inventory: "{{ awx_target_inv }}"
+        project: Homelab - Cloudflare DDNS
+        playbook: ansible/deploy-docker-compose-cloudflare-ddns.yml
+        become_enabled: true
+        credentials: "{{ job_template_credentials }}"
+        extra_vars:
+          host: "{{ host }}"
+          cloudflare_ddns_proxied_domains: "{{ cloudflare_ddns_proxied_domains }}"
+          cloudflare_ddns_non_proxied_domains: "{{ cloudflare_ddns_non_proxied_domains }}"
+          ipaclient_domain: "{{ ipaclient_domain }}"
+          ipaclient_realm: "{{ ipaclient_realm }}"
+          ipaclient_servers: "{{ ipaclient_servers }}"

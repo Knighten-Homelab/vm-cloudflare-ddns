@@ -20,7 +20,7 @@
 
 - name: Create docker-compose file
   ansible.builtin.template:
-    src: docker-compose.yml.j2
+    src: docker-compose.yaml.j2
     dest: "{{ cloudflare_ddns_app_path }}/docker-compose.yml"
     owner: cloudflare
     group: cloudflare
