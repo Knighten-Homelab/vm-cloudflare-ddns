@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.3.1...1.4.0) (2025-02-04)
+
+### Features
+
+* add awx resource creation on prod deploy gha ([#5](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/5)) ([9367f04](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/9367f04dfe8d80694039f133a7058f780914febf))
+
 ## [1.3.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.3.0...1.3.1) (2025-02-04)
 
 ### Bug Fixes
