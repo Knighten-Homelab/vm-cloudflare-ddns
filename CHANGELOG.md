@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.2.0...1.3.0) (2025-02-04)
+
+### Features
+
+* gha for linting ansible code ([#4](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/4)) ([154952e](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/154952e82e41d8e3b8b3f5f5634d21aa9c8a2602))
+
 ## [1.2.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.1.0...1.2.0) (2025-02-02)
 
 ### Features
