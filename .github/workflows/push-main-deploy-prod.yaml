@@ -49,3 +49,37 @@ jobs:
           TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
         run: |
           terraform apply -var-file=envs/prod.tfvars -auto-approve
+
+  deploy-awx-resources:
+    runs-on: github-arc-runners
+    needs:
+      - apply-tf
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Ansible Playbook Dependencies
+        run: ansible-galaxy collection install awx.awx
+
+      - name: Run AWX Resource Creation Playbook
+        env:
+          CONTROLLER_HOST: ${{ secrets.AWX_HOST }}
+          CONTROLLER_USERNAME: ${{ secrets.AWX_USER }}
+          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW }}
+        working-directory: ansible
+        run: |
+          ansible-playbook \
+            -i localhost \
+            -e @envs/prod.yaml \
+            create-awx-cloudflare-ddns-deployment-resources.yaml

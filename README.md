@@ -117,13 +117,13 @@ dns_zone="example.com
 
 Here are the expected secrets under each path variable.
 
-| **Vault Path Variable**                | **Expected Secret Key**      | **Usage**                                     | **Provider/Module**          |
-|----------------------------------------|------------------------------|-----------------------------------------------|--------------------------------|
-| `var.vault_pve_secrets_path`           | `username`                   | Proxmox API username                          | Proxmox                       |
-|                                        | `password`                   | Proxmox API password                          | Proxmox                       |
-| `var.vault_pdns_secrets_path`          | `terraform_api_key`          | API key for PowerDNS                          | PowerDNS                      |
-| `var.vault_ansible_service_account_secrets_path` | `ssh-key-private`           | Private SSH key for the Ansible service account | Proxmox Cloud Init      |
-|                                        | `ssh-key-public`             | Public SSH key for the Ansible service account | Proxmox Cloud Init            |
+| **Vault Path Variable**                          | **Expected Secret Key** | **Usage**                                       | **Provider/Module** |
+| ------------------------------------------------ | ----------------------- | ----------------------------------------------- | ------------------- |
+| `var.vault_pve_secrets_path`                     | `username`              | Proxmox API username                            | Proxmox             |
+|                                                  | `password`              | Proxmox API password                            | Proxmox             |
+| `var.vault_pdns_secrets_path`                    | `terraform_api_key`     | API key for PowerDNS                            | PowerDNS            |
+| `var.vault_ansible_service_account_secrets_path` | `ssh-key-private`       | Private SSH key for the Ansible service account | Proxmox Cloud Init  |
+|                                                  | `ssh-key-public`        | Public SSH key for the Ansible service account  | Proxmox Cloud Init  |
 
 ## Application Deployment
 
@@ -185,18 +185,12 @@ Then run the playbook like this:
 ansible-playbook -i localhost create-awx-cloudflare-ddns-deployment-resources.yml -e @vars.yml
 ```
 
-### Deployment Without AWX
+#### Expected Secrets
 
-The first step to execute the deployment without AWX is to install all required Ansible roles and collections. This can be done like so:
+The following secrets are expected to be provided via environment variables
 
-```bash
-ansible-galaxy collection install -r ./collections/requirements.yml
-ansible-galaxy install -r ./roles/requirements.yml
-```
-
-Then to launch the ansible-playbook you would run the following command:
-
-``` bash
-# From inside the ansible directory
-
-```
+| **Env Var**         | **Expected Value** |
+| ------------------- | ------------------ |
+| CONTROLLER_HOST     | AWX Hostname       |
+| CONTROLLER_USERNAME | AWX Username       |
+| CONTROLLER_PASSWORD | AWX User Password  |
