@@ -1,3 +1,9 @@
+## [1.3.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.3.0...1.3.1) (2025-02-04)
+
+### Bug Fixes
+
+* switched requirements back to ssh ([541a238](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/541a23848d2c3b0f576695b576d18eb90f9d25c1))
+
 ## [1.3.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.2.0...1.3.0) (2025-02-04)
 
 ### Features
