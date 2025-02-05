@@ -115,7 +115,7 @@ jobs:
           echo "Found job template ID: $JOB_TEMPLATE_ID"
           echo "job_template_id=$JOB_TEMPLATE_ID" >> $GITHUB_OUTPUT
 
-     - name: Launch AWX Job Template
+      - name: Launch AWX Job Template
         env:
           AWX_USER: ${{ secrets.AWX_USER }}
           AWX_PW: ${{ secrets.AWX_PW }}
