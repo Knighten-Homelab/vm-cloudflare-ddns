@@ -101,9 +101,19 @@ jobs:
           AWX_HOST: ${{ secrets.AWX_HOST }}
           JOB_TEMPLATE_NAME: "Deploy%20-%20Cloudflare%20DDNS%20%28Containerized%29"
         run: |
-          curl -s -u "$AWX_USER:$AWX_PW" \
+          RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
-            "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}"
+            "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}")
+
+          JOB_TEMPLATE_ID=$(echo "$RESPONSE" | jq -r '.results[0].id')
+        
+          if [ "$JOB_TEMPLATE_ID" = "null" ] || [ -z "$JOB_TEMPLATE_ID" ]; then
+            echo "Error: No job template found with name ${JOB_TEMPLATE_NAME}" >&2
+            exit 1
+          fi
+
+          echo "Found job template ID: $JOB_TEMPLATE_ID"
+          echo "job_template_id=$JOB_TEMPLATE_ID" >> $GITHUB_OUTPUT
 
       # - name: Launch AWX Job
       #   env:
