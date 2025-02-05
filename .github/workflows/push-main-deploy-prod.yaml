@@ -97,11 +97,11 @@ jobs:
       - name: Query AWX for Job Template
         env:
           AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PASSWORD: ${{ secrets.AWX_PASSWORD }}
+          AWX_PW: ${{ secrets.AWX_PW }}
           AWX_HOST: ${{ secrets.AWX_HOST }}
           JOB_TEMPLATE_NAME: "Deploy - Cloudflare DDNS (Containerized)"
         run: |
-          curl -s -u "$AWX_USER:$AWX_PASSWORD" \
+          curl -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
             "$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}"
 
