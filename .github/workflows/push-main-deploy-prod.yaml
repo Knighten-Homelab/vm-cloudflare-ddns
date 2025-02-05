@@ -99,7 +99,7 @@ jobs:
           AWX_USER: ${{ secrets.AWX_USER }}
           AWX_PW: ${{ secrets.AWX_PW }}
           AWX_HOST: ${{ secrets.AWX_HOST }}
-          JOB_TEMPLATE_NAME: "Deploy - Cloudflare DDNS (Containerized)"
+          JOB_TEMPLATE_NAME: "%20-%20Cloudflare%20DDNS%20%28Containerized%29"
         run: |
           curl -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
