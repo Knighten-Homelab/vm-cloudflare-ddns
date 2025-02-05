@@ -4,8 +4,8 @@ run-name: Production Deployment for Push on ${{ github.ref_name }} ${{ github.ru
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths-ignore:
       - 'CHANGELOG.md'
 
@@ -83,3 +83,37 @@ jobs:
             -i localhost \
             -e @envs/prod.yaml \
             create-awx-cloudflare-ddns-deployment-resources.yaml
+
+  deploy-app:
+    runs-on: github-arc-runners
+    needs:
+      - deploy-awx-resources
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Query AWX for Job Template
+        env:
+          AWX_USER: ${{ secrets.AWX_USER }}
+          AWX_PASSWORD: ${{ secrets.AWX_PASSWORD }}
+          AWX_HOST: ${{ secrets.AWX_HOST }}
+          JOB_TEMPLATE_NAME: "Deploy - Cloudflare DDNS (Containerized)"
+        run: |
+          curl -s -u "$AWX_USER:$AWX_PASSWORD" \
+            -H "Content-Type: application/json" \
+            "$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}"
+
+      # - name: Launch AWX Job
+      #   env:
+      #     AWX_USER: ${{ secrets.AWX_USER }}
+      #     AWX_PASSWORD: ${{ secrets.AWX_PASSWORD }}
+      #     AWX_SERVER: ${{ secrets.AWX_HOST }}
+      #     AWX_JOB_TEMPLATE_ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}
+      #   run: |
+      #     curl -X POST \
+      #       -u "$AWX_USER:$AWX_PASSWORD" \
+      #       -H "Content-Type: application/json" \
+      #       -d "{\"extra_vars\": $EXTRA_VARS}" \
+      #       "$AWX_HOST/api/v2/job_templates/$AWX_JOB_TEMPLATE_ID/launch/"
