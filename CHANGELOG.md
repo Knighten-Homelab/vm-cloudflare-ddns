@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.0...1.5.1) (2025-02-05)
+
+### Bug Fixes
+
+* awx job template playbook extension ([e1b6310](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/e1b6310fd0ca7bd9d3fa638d1f27f926071e62f4))
+
 ## [1.5.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.4.0...1.5.0) (2025-02-05)
 
 ### Features
