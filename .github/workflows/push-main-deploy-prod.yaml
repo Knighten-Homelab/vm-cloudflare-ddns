@@ -152,14 +152,15 @@ jobs:
             RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
               -H "Content-Type: application/json" \
               "https://$AWX_HOST/api/v2/jobs/$JOB_ID/")
-            STATUS=$(echo "$RESPONSE" | jq -r '.status')
 
+            STATUS=$(echo "$RESPONSE" | jq -r '.status')
+            
             if [[ "$STATUS" == "successful" || "$STATUS" == "failed" || "$STATUS" == "error" ]]; then
               break
             fi
             sleep 10
           done
-          
+
           if [ "$STATUS" != "successful" ]; then
             echo "Job did not complete successfully. Final status: $STATUS"
             exit 1
