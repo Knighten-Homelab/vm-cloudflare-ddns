@@ -125,4 +125,6 @@ jobs:
           JOB_TEMPLATE_ID="${{ steps.query_job_template.outputs.job_template_id }}"
           curl -L -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
+            -X POST \
+            -d '{}' \
             "https://$AWX_HOST/api/v2/job_templates/${JOB_TEMPLATE_ID}/launch/"
