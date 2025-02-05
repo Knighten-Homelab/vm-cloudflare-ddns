@@ -95,6 +95,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Query AWX for Job Template
+        id: query_job_template
         env:
           AWX_USER: ${{ secrets.AWX_USER }}
           AWX_PW: ${{ secrets.AWX_PW }}
@@ -121,7 +122,7 @@ jobs:
           AWX_PW: ${{ secrets.AWX_PW }}
           AWX_HOST: ${{ secrets.AWX_HOST }}
         run: |
-          JOB_TEMPLATE_ID="${{ steps.query_template.outputs.job_template_id }}"
+          JOB_TEMPLATE_ID="${{ steps.query_job_template.outputs.job_template_id }}"
           curl -L -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
             -d "{\"extra_vars\": $EXTRA_VARS}" \
