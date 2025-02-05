@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.4.0...1.5.0) (2025-02-05)
+
+### Features
+
+* add deploy cf ddns via awx job to deploy gha ([#6](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/6)) ([b5c3a39](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/b5c3a39dfaf2c7c58f01d51851cdf1614b3c2f1c))
+
 ## [1.4.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.3.1...1.4.0) (2025-02-04)
 
 ### Features
