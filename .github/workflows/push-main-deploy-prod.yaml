@@ -103,7 +103,7 @@ jobs:
         run: |
           curl -s -u "$AWX_USER:$AWX_PW" \
             -H "Content-Type: application/json" \
-            "$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}"
+            "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}"
 
       # - name: Launch AWX Job
       #   env:
