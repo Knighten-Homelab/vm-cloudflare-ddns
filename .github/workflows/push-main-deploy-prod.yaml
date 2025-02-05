@@ -115,15 +115,14 @@ jobs:
           echo "Found job template ID: $JOB_TEMPLATE_ID"
           echo "job_template_id=$JOB_TEMPLATE_ID" >> $GITHUB_OUTPUT
 
-      # - name: Launch AWX Job
-      #   env:
-      #     AWX_USER: ${{ secrets.AWX_USER }}
-      #     AWX_PASSWORD: ${{ secrets.AWX_PASSWORD }}
-      #     AWX_SERVER: ${{ secrets.AWX_HOST }}
-      #     AWX_JOB_TEMPLATE_ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}
-      #   run: |
-      #     curl -X POST \
-      #       -u "$AWX_USER:$AWX_PASSWORD" \
-      #       -H "Content-Type: application/json" \
-      #       -d "{\"extra_vars\": $EXTRA_VARS}" \
-      #       "$AWX_HOST/api/v2/job_templates/$AWX_JOB_TEMPLATE_ID/launch/"
+     - name: Launch AWX Job Template
+        env:
+          AWX_USER: ${{ secrets.AWX_USER }}
+          AWX_PW: ${{ secrets.AWX_PW }}
+          AWX_HOST: ${{ secrets.AWX_HOST }}
+        run: |
+          JOB_TEMPLATE_ID="${{ steps.query_template.outputs.job_template_id }}"
+          curl -L -s -u "$AWX_USER:$AWX_PW" \
+            -H "Content-Type: application/json" \
+            -d "{\"extra_vars\": $EXTRA_VARS}" \
+            "https://$AWX_HOST/api/v2/job_templates/${JOB_TEMPLATE_ID}/launch/"
