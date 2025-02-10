@@ -1,3 +1,9 @@
+## [1.6.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.1...1.6.2) (2025-02-10)
+
+### Bug Fixes
+
+* added releaseRef to manual deploy/destroy gha run-name ([c7ae094](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/c7ae094e2f15707e1253a4ac5f979dd0cf403744))
+
 ## [1.6.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.0...1.6.1) (2025-02-10)
 
 ### Bug Fixes
