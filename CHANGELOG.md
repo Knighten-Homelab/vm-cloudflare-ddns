@@ -1,3 +1,9 @@
+## [1.5.4](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.3...1.5.4) (2025-02-10)
+
+### Bug Fixes
+
+* correct synatx issue in prod deploy action ([454ee18](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/454ee18b8711420d994fd3d90b1910f347d51378))
+
 ## [1.5.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.2...1.5.3) (2025-02-10)
 
 ### Bug Fixes
