@@ -1,3 +1,9 @@
+## [1.5.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.1...1.5.2) (2025-02-10)
+
+### Bug Fixes
+
+* moved prod deploy action to push tag trigger ([d94b4f6](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/d94b4f604c341bc9a2450b698c243f744f6fdbb5))
+
 ## [1.5.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.0...1.5.1) (2025-02-05)
 
 ### Bug Fixes
