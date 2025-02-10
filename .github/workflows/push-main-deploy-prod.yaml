@@ -1,13 +1,11 @@
 ---
 name: Deployment - Production
-run-name: Production Deployment for Push on ${{ github.ref_name }} ${{ github.run_number }}
+run-name: Production Deployment for Push on ${{ github.ref_name }}
 
 on:
   push:
-    branches:
-      - main
-    paths-ignore:
-      - 'CHANGELOG.md'
+    tags:
+      - '*.*.*'
 
 permissions:
   contents: read
