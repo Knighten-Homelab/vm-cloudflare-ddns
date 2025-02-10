@@ -1,3 +1,9 @@
+## [1.6.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.2...1.6.3) (2025-02-10)
+
+### Bug Fixes
+
+* correct default destroy for manual destroy gha ([d5aaf34](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/d5aaf3422df8499682dbe969ebde6b450ca680b2))
+
 ## [1.6.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.1...1.6.2) (2025-02-10)
 
 ### Bug Fixes
