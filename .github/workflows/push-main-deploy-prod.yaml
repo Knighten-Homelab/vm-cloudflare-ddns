@@ -35,8 +35,9 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Echo Release Tag
-        run: echo "Deploying version: ${{ steps.get_release.outputs.tag }}"
-        
+        run: |
+          echo "Deploying version: ${{ steps.get_release.outputs.tag }}"
+
   apply-tf:
     runs-on: github-arc-runners
     needs:
