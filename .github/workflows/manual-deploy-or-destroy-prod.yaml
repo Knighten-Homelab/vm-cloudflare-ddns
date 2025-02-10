@@ -12,9 +12,13 @@ on:
         options:
           - Deploy
           - Destroy
+      releaseRef:
+        type: string
+        default: main
+        description: "Git Ref (Branch/Tag) Used For"
 
 jobs:
-  deploy:
+  apply-tf:
     runs-on: github-arc-runners
     if: ${{ github.event.inputs.actionSelection == 'Deploy'}}
     permissions:
@@ -25,6 +29,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.releaseRef }}
 
       - name: Install Node.js (Dependency For Other Action)
         uses: actions/setup-node@v4
@@ -61,6 +67,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.releaseRef }}
 
       - name: Install Python
         uses: actions/setup-python@v5
@@ -95,6 +103,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.releaseRef }}
 
       - name: Query AWX for Job Template
         id: query_job_template
@@ -178,6 +188,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.releaseRef }}
 
       - name: Install Node.js (Dependency For Other Action)
         uses: actions/setup-node@v4
