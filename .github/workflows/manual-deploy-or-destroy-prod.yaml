@@ -185,6 +185,9 @@ jobs:
     if: ${{ github.event.inputs.actionSelection == 'Destroy' }}
     permissions:
       contents: read
+    defaults:
+      run:
+        working-directory: infra
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
