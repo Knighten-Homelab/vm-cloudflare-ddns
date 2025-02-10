@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.4...1.6.0) (2025-02-10)
+
+### Features
+
+* added manual deploy/destroy prod gha ([f8da9fd](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/f8da9fd54aa1f005c9cd0dd2b324c2d15e4af39e))
+
 ## [1.5.4](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.3...1.5.4) (2025-02-10)
 
 ### Bug Fixes
