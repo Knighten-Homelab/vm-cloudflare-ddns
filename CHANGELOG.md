@@ -1,3 +1,9 @@
+## [1.5.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.2...1.5.3) (2025-02-10)
+
+### Bug Fixes
+
+* switched deploy prod action to workflow_run trigger ([1e172c0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/1e172c0b279624003af060f0c65e6f1c95c87e73))
+
 ## [1.5.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.5.1...1.5.2) (2025-02-10)
 
 ### Bug Fixes
