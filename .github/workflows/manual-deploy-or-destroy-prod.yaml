@@ -1,6 +1,6 @@
 ---
 name: Deployment/Destroy - Prod (Manual)
-run-name: Manual ${{ github.event.inputs.actionSelection }} On Prod Using ${{ github.ref_name }}
+run-name: Manual ${{ github.event.inputs.actionSelection }} On Prod Using ${{ github.event.inputs.releaseRef }}
 
 on:
   workflow_dispatch:
