@@ -1,3 +1,9 @@
+## [1.7.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.3...1.7.0) (2025-03-06)
+
+### Features
+
+* added app remove/destroy code to cicd process ([#7](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/7)) ([2f377a5](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/2f377a57d22297138b807d04270f0db97a2b254f))
+
 ## [1.6.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.2...1.6.3) (2025-02-10)
 
 ### Bug Fixes
