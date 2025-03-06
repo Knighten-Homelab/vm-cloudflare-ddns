@@ -59,7 +59,7 @@
 
     - name: Create deploy job template
       awx.awx.job_template:
-        name: Deploy - Cloudflare DDNS (Containerized)
+        name: Cloudflare DDNS  (Containerized) - Deploy
         job_type: run
         inventory: "{{ awx_target_inv }}"
         project: Homelab - Cloudflare DDNS
@@ -76,7 +76,7 @@
 
     - name: Create remove job template
       awx.awx.job_template:
-        name: Remove - Cloudflare DDNS (Containerized)
+        name: Cloudflare DDNS  (Containerized) - Remove
         job_type: run
         inventory: "{{ awx_target_inv }}"
         project: Homelab - Cloudflare DDNS
