@@ -36,12 +36,12 @@
 
     - name: Delete deploy job template
       awx.awx.job_template:
-        name: Deploy - Cloudflare DDNS (Containerized)
+        name: Cloudflare DDNS  (Containerized) - Deploy
         state: absent
 
     - name: Delete destroy job template
       awx.awx.job_template:
-        name: Remove - Cloudflare DDNS (Containerized)
+        name: Cloudflare DDNS  (Containerized) - Remove
         state: absent
 
     - name: Delete project
