@@ -1,3 +1,9 @@
+## [1.7.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.7.0...1.7.1) (2025-03-06)
+
+### Bug Fixes
+
+* corrected branch used by awx project for prod ([dfaadbe](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/dfaadbe7477e55914243b7a677cc28a7455c3376))
+
 ## [1.7.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.6.3...1.7.0) (2025-03-06)
 
 ### Features
