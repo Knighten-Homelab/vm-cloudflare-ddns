@@ -1,7 +1,7 @@
 awx_target_org: "Homelab"
 awx_target_inv: "Homelab"
 awx_git_credential: "Github - AWX SSH Key"
-awx_project_branch: "feat/add-remove-app-to-cicd"
+awx_project_branch: "main"
 host: cloudflare-ddns
 hostname: "cloudflare-ddns.knighten.io"
 host_groups:
