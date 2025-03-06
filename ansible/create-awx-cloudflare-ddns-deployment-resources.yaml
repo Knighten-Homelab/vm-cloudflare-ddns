@@ -80,7 +80,7 @@
         job_type: run
         inventory: "{{ awx_target_inv }}"
         project: Homelab - Cloudflare DDNS
-        playbook: ansible/remove-and-clean-docker-compose-cloudflare-ddns
+        playbook: ansible/remove-and-clean-docker-compose-cloudflare-ddns.yaml
         become_enabled: true
         credentials: "{{ job_template_credentials }}"
         extra_vars:
