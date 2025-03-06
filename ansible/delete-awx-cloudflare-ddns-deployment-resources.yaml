@@ -34,9 +34,14 @@
         inventory: "{{ awx_target_inv }}"
         state: absent
 
-    - name: Delete job template
+    - name: Delete deploy job template
       awx.awx.job_template:
         name: Deploy - Cloudflare DDNS (Containerized)
+        state: absent
+
+    - name: Delete destroy job template
+      awx.awx.job_template:
+        name: Remove - Cloudflare DDNS (Containerized)
         state: absent
 
     - name: Delete project
