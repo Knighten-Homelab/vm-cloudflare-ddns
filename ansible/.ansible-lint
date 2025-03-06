@@ -12,6 +12,7 @@ mock_modules:
   - awx.awx.project
   - awx.awx.job_template
   - community.docker.docker_compose_v2
+  - freeipa.ansible_freeipa.ipahost
 
 mock_roles:
   - geerlingguy.pip
