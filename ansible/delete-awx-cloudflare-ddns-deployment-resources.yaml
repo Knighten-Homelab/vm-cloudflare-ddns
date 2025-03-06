@@ -1,0 +1,46 @@
+---
+- name: Remove AWX Resources for Cloudflare DDNS Deployment
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Ensure required vars are present for removal
+      ansible.builtin.assert:
+        that:
+          - awx_target_org is defined
+          - awx_target_inv is defined
+          - awx_git_credential is defined
+          - host is defined
+          - host_groups is defined
+        fail_msg: "Required variables for removal are missing. Please provide them using --extra-vars."
+
+    - name: Verify that the AWX credentials are provided as environment variables for removal
+      ansible.builtin.fail:
+        msg: AWX credentials are missing for removal. Ensure CONTROLLER_HOST, CONTROLLER_USERNAME, and CONTROLLER_PASSWORD are set as environment variables.
+      when: not (lookup('env', 'CONTROLLER_HOST') and lookup('env', 'CONTROLLER_USERNAME') and lookup('env', 'CONTROLLER_PASSWORD'))
+
+    - name: Remove host from groups
+      awx.awx.group:
+        inventory: "{{ awx_target_inv }}"
+        name: "{{ item }}"
+        state: absent
+        hosts:
+          - "{{ host }}"
+      loop: "{{ host_groups }}"
+
+    - name: Delete host resource
+      awx.awx.host:
+        name: "{{ host }}"
+        inventory: "{{ awx_target_inv }}"
+        state: absent
+
+    - name: Delete job template
+      awx.awx.job_template:
+        name: Deploy - Cloudflare DDNS (Containerized)
+        state: absent
+
+    - name: Delete project
+      awx.awx.project:
+        name: Homelab - Cloudflare DDNS
+        state: absent
+        organization: "{{ awx_target_org }}"
