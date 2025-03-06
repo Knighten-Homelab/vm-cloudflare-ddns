@@ -1,0 +1,25 @@
+---
+- name: Cleanup Cloudflare DDNS Deployment
+  hosts: "{{ host }}"
+  become: true
+  vars:
+    host: localhost
+  tasks:
+    - name: Ensure required vars are present for cleanup
+      ansible.builtin.assert:
+        that:
+          - host is defined
+          - hostname is defined
+          - ipaadmin_principal is defined
+          - ipaadmin_password is defined
+          - ipaclient_domain is defined
+          - ipaclient_realm is defined
+          - ipaclient_servers is defined
+        fail_msg: "Required variables for cleanup are missing. Please provide them using --extra-vars."
+
+    - name: Unregister host from FreeIPA
+      freeipa.ansible_freeipa.ipahost:
+        name: "{{ hostname }}"
+        ipaadmin_principal: "{{ ipaadmin_principal }}"
+        ipaadmin_password: "{{ ipaadmin_password }}"
+        state: absent

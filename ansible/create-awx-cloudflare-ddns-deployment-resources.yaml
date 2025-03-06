@@ -57,9 +57,9 @@
         scm_update_on_launch: true
         scm_credential: "{{ awx_git_credential }}"
 
-    - name: Create job template
+    - name: Create deploy job template
       awx.awx.job_template:
-        name: Deploy - Cloudflare DDNS (Containerized)
+        name: Cloudflare DDNS (Containerized) - Deploy
         job_type: run
         inventory: "{{ awx_target_inv }}"
         project: Homelab - Cloudflare DDNS
@@ -70,6 +70,21 @@
           host: "{{ host }}"
           cloudflare_ddns_proxied_domains: "{{ cloudflare_ddns_proxied_domains }}"
           cloudflare_ddns_non_proxied_domains: "{{ cloudflare_ddns_non_proxied_domains }}"
+          ipaclient_domain: "{{ ipaclient_domain }}"
+          ipaclient_realm: "{{ ipaclient_realm }}"
+          ipaclient_servers: "{{ ipaclient_servers }}"
+
+    - name: Create remove job template
+      awx.awx.job_template:
+        name: Cloudflare DDNS (Containerized) - Remove
+        job_type: run
+        inventory: "{{ awx_target_inv }}"
+        project: Homelab - Cloudflare DDNS
+        playbook: ansible/remove-and-clean-docker-compose-cloudflare-ddns.yaml
+        become_enabled: true
+        credentials: "{{ job_template_credentials }}"
+        extra_vars:
+          host: "{{ host }}"
           ipaclient_domain: "{{ ipaclient_domain }}"
           ipaclient_realm: "{{ ipaclient_realm }}"
           ipaclient_servers: "{{ ipaclient_servers }}"
