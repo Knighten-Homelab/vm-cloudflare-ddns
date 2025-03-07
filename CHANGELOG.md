@@ -1,3 +1,9 @@
+## [1.8.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.8.0...1.8.1) (2025-03-07)
+
+### Bug Fixes
+
+* corrected secret syntax in pr-close destroy test gha ([2a022e9](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/2a022e9b1f5d9f6ffa724dd0fc7d76533427b6d4))
+
 ## [1.8.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.7.1...1.8.0) (2025-03-07)
 
 ### Features
