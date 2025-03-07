@@ -1,5 +1,5 @@
 ---
-name: Lint & Scan - Terraform
+name: PR Opened - Lint & Scan - Terraform
 run-name: Terraform Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint
 
 on:

@@ -1,5 +1,5 @@
 ---
-name: Release
+name: Push To Main - Release
 run-name: Release for Push on ${{ github.ref_name }} ${{ github.run_number }}
 
 on:

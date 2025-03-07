@@ -1,5 +1,5 @@
 ---
-name: Deployment - Production
+name: Push To Main - Deploy To Prod
 run-name: Production Deployment for Push on ${{ github.ref_name }}
 
 on:

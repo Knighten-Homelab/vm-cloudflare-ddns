@@ -1,5 +1,5 @@
 ---
-name: PR Opened - Push To Test
+name: PR Opened - Deploy To Test
 run-name: Deploying PR ${{ github.event.number }} on ${{ github.head_ref }} To Test
 
 on:
