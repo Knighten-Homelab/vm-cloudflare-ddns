@@ -3,7 +3,6 @@ name: Manual Launch - Deploy/Destroy Environment
 run-name: Manual ${{ github.event.inputs.actionSelection }} On ${{ github.event.inputs.environment }} Using ${{ github.event.inputs.releaseRef }}
 
 on:
-  pull_request:
   workflow_dispatch:
     inputs:
       actionSelection:
