@@ -1,6 +1,6 @@
 ---
-name: Deployment/Destroy - Prod (Manual)
-run-name: Manual ${{ github.event.inputs.actionSelection }} On Prod Using ${{ github.event.inputs.releaseRef }}
+name: Manual Launch - Deploy/Destroy Environment
+run-name: Manual ${{ github.event.inputs.actionSelection }} On ${{ github.event.inputs.environment }} Using ${{ github.event.inputs.releaseRef }}
 
 on:
   workflow_dispatch:
@@ -12,10 +12,17 @@ on:
         options:
           - Deploy
           - Destroy
+      environment:
+        type: choice
+        required: true
+        description: "Deployment Environment"
+        options:
+          - prod
+          - test
       releaseRef:
         type: string
         default: main
-        description: "Git Ref (Branch/Tag) Used For"
+        description: "Git Ref (Branch/Tag) Checked Out During Execution"
 
 jobs:
   apply-tf:
@@ -35,28 +42,28 @@ jobs:
       - name: Install Node.js (Dependency For Other Action)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
+          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_S3_STATE_BUCKET: ${{ secrets[format('S3_BUCKET_NAME_{0}', github.event.inputs.environment)] }}
         run: |
           terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
 
       - name: Terraform Apply
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
+          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          TF_VAR_vault_token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
         run: |
-          terraform apply -var-file=envs/prod.tfvars -auto-approve
+          terraform apply -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve
 
   deploy-awx-resources:
     runs-on: github-arc-runners
@@ -73,8 +80,8 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-          cache: 'pip'
+          python-version: "3.13"
+          cache: "pip"
 
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
@@ -84,14 +91,14 @@ jobs:
 
       - name: Run AWX Resource Creation Playbook
         env:
-          CONTROLLER_HOST: ${{ secrets.AWX_HOST }}
-          CONTROLLER_USERNAME: ${{ secrets.AWX_USER }}
-          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW }}
+          CONTROLLER_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_USERNAME: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_PASSWORD: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         working-directory: ansible
         run: |
           ansible-playbook \
             -i localhost \
-            -e @envs/prod.yaml \
+            -e @envs/${{ github.event.inputs.environment }}.yaml \
             create-awx-cloudflare-ddns-deployment-resources.yaml
 
   deploy-app:
@@ -109,9 +116,9 @@ jobs:
       - name: Query AWX for Job Template
         id: query_deploy_job_template
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -119,7 +126,7 @@ jobs:
             "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}")
 
           JOB_TEMPLATE_ID=$(echo "$RESPONSE" | jq -r '.results[0].id')
-        
+
           if [ "$JOB_TEMPLATE_ID" = "null" ] || [ -z "$JOB_TEMPLATE_ID" ]; then
             echo "Error: No job template found with name ${JOB_TEMPLATE_NAME}" >&2
             exit 1
@@ -131,9 +138,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_deploy_job
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_deploy_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -152,9 +159,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         run: |
           JOB_ID="${{ steps.launch_deploy_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"
@@ -194,9 +201,9 @@ jobs:
       - name: Query AWX for Job Template
         id: query_remove_job_template
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Remove"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -204,7 +211,7 @@ jobs:
             "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}")
 
           JOB_TEMPLATE_ID=$(echo "$RESPONSE" | jq -r '.results[0].id')
-        
+
           if [ "$JOB_TEMPLATE_ID" = "null" ] || [ -z "$JOB_TEMPLATE_ID" ]; then
             echo "Error: No job template found with name ${JOB_TEMPLATE_NAME}" >&2
             exit 1
@@ -216,9 +223,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_remove_job
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_remove_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -237,9 +244,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_USER: ${{ secrets.AWX_USER }}
-          AWX_PW: ${{ secrets.AWX_PW }}
-          AWX_HOST: ${{ secrets.AWX_HOST }}
+          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         run: |
           JOB_ID="${{ steps.launch_remove_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"
@@ -280,8 +287,8 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
-          cache: 'pip'
+          python-version: "3.13"
+          cache: "pip"
 
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
@@ -291,9 +298,9 @@ jobs:
 
       - name: Run AWX Resource Deletion Playbook
         env:
-          CONTROLLER_HOST: ${{ secrets.AWX_HOST }}
-          CONTROLLER_USERNAME: ${{ secrets.AWX_USER }}
-          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW }}
+          CONTROLLER_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_USERNAME: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_PASSWORD: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
         working-directory: ansible
         run: |
           ansible-playbook \
@@ -319,25 +326,25 @@ jobs:
       - name: Install Node.js (Dependency For Other Action)
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
+          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_S3_STATE_BUCKET: ${{ secrets[format('S3_BUCKET_NAME_{0}', github.event.inputs.environment)] }}
         run: |
           terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
 
       - name: Terraform Destroy
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
+          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          TF_VAR_vault_token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
         run: |
-          terraform destroy -var-file=envs/prod.tfvars -auto-approve
+          terraform destroy -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve

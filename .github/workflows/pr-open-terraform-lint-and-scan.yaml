@@ -1,5 +1,5 @@
 ---
-name: Lint & Scan - Terraform
+name: PR Opened - Lint & Scan - Terraform
 run-name: Terraform Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint
 
 on:
@@ -36,10 +36,10 @@ jobs:
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
-          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_TEST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_TEST }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_TEST }}
+          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME_TEST }}
         run: |
           terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
 
