@@ -20,9 +20,9 @@ jobs:
       - name: Query AWX for Job Template
         id: query_remove_job_template
         env:
-          AWX_HOST: AWX_HOST_TEST
-          AWX_USER: AWX_USER_TEST
-          AWX_PW: AWX_PW_TEST
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Remove"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -42,9 +42,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_remove_job
         env:
-          AWX_HOST: AWX_HOST_TEST
-          AWX_USER: AWX_USER_TEST
-          AWX_PW: AWX_PW_TEST
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_remove_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -63,9 +63,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_HOST: AWX_HOST_TEST
-          AWX_USER: AWX_USER_TEST
-          AWX_PW: AWX_PW_TEST
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST }}
         run: |
           JOB_ID="${{ steps.launch_remove_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"
@@ -117,9 +117,9 @@ jobs:
 
       - name: Run AWX Resource Deletion Playbook
         env:
-          CONTROLLER_HOST: AWX_HOST_TEST
-          CONTROLLER_USERNAME: AWX_USER_TEST
-          CONTROLLER_PASSWORD: AWX_PW_TEST
+          CONTROLLER_HOST: ${{ secrets.AWX_HOST_TEST }}
+          CONTROLLER_USERNAME: ${{ secrets.AWX_USER_TEST }}
+          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW_TEST }}
         working-directory: ansible
         run: |
           ansible-playbook \
@@ -152,18 +152,18 @@ jobs:
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: S3_URL_TEST
-          AWS_ACCESS_KEY_ID: S3_ACCESS_KEY_TEST
-          AWS_SECRET_ACCESS_KEY: S3_SECRET_KEY_TEST
-          AWS_S3_STATE_BUCKET: S3_BUCKET_NAME_TEST
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_TEST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_TEST }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_TEST }}
+          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME_TEST }}
         run: |
           terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
 
       - name: Terraform Destroy
         env:
-          AWS_ENDPOINT_URL_S3: S3_URL_TEST
-          AWS_ACCESS_KEY_ID: S3_ACCESS_KEY_TEST
-          AWS_SECRET_ACCESS_KEY: S3_SECRET_KEY_TEST
-          TF_VAR_vault_token: VAULT_TOKEN_TEST
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_TEST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_TEST }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_TEST }}
+          TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN_TEST }}
         run: |
           terraform destroy -var-file=envs/test.tfvars -auto-approve
