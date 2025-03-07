@@ -1,0 +1,169 @@
+---
+name: PR Opened - Push To Test
+run-name: Deploying PR ${{ github.event.number }} on ${{ github.head_ref }} To Test
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+
+jobs: 
+  apply-tf:
+    runs-on: github-arc-runners
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Node.js (Dependency For Other Action)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        env:
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_TEST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_TEST }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_TEST }}
+          AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME_TEST }}
+        run: |
+          terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
+
+      - name: Terraform Apply
+        env:
+          AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_TEST }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_TEST }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_TEST }}
+          TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN_TEST }}
+        run: |
+          terraform apply -var-file=envs/test.tfvars -auto-approve
+
+  deploy-awx-resources:
+    runs-on: github-arc-runners
+    needs:
+      - apply-tf
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Ansible Playbook Dependencies
+        run: ansible-galaxy collection install awx.awx
+
+      - name: Run AWX Resource Creation Playbook
+        env:
+          CONTROLLER_HOST: ${{ secrets.AWX_HOST_TEST }}
+          CONTROLLER_USERNAME: ${{ secrets.AWX_USER_TEST }}
+          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW_TEST }}
+        working-directory: ansible
+        run: |
+          ansible-playbook \
+            -i localhost \
+            -e @envs/test.yaml \
+            create-awx-cloudflare-ddns-deployment-resources.yaml
+
+  deploy-app:
+    runs-on: github-arc-runners
+    needs:
+      - deploy-awx-resources
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Query AWX for Job Template
+        id: query_job_template
+        env:
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST}}
+          JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy"
+        run: |
+          RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
+            -H "Content-Type: application/json" \
+            "https://$AWX_HOST/api/v2/job_templates/?name=${JOB_TEMPLATE_NAME}")
+
+          JOB_TEMPLATE_ID=$(echo "$RESPONSE" | jq -r '.results[0].id')
+        
+          if [ "$JOB_TEMPLATE_ID" = "null" ] || [ -z "$JOB_TEMPLATE_ID" ]; then
+            echo "Error: No job template found with name ${JOB_TEMPLATE_NAME}" >&2
+            exit 1
+          fi
+
+          echo "Found job template ID: $JOB_TEMPLATE_ID"
+          echo "job_template_id=$JOB_TEMPLATE_ID" >> $GITHUB_OUTPUT
+
+      - name: Launch AWX Job Template
+        id: launch_job
+        env:
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST }}
+        run: |
+          JOB_TEMPLATE_ID="${{ steps.query_job_template.outputs.job_template_id }}"
+          LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d '{}' \
+            "https://$AWX_HOST/api/v2/job_templates/${JOB_TEMPLATE_ID}/launch/")
+
+          JOB_ID=$(echo "$LAUNCH_RESPONSE" | jq -r '.job')
+          if [ "$JOB_ID" = "null" ] || [ -z "$JOB_ID" ]; then
+            echo "Error: No job ID returned in launch response." >&2
+            exit 1
+          fi
+          echo "Launched Job ID: $JOB_ID"
+          echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+      - name: Poll for Job Status
+        env:
+          AWX_HOST: ${{ secrets.AWX_HOST_TEST }}
+          AWX_USER: ${{ secrets.AWX_USER_TEST }}
+          AWX_PW: ${{ secrets.AWX_PW_TEST }}
+        run: |
+          JOB_ID="${{ steps.launch_job.outputs.job_id }}"
+          echo "Polling AWX for status of Job ID: $JOB_ID"
+          STATUS=""
+          # Poll every 10 seconds, up to a maximum of 30 minutes (180 iterations)
+          for i in {1..180}; do
+            RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
+              -H "Content-Type: application/json" \
+              "https://$AWX_HOST/api/v2/jobs/$JOB_ID/")
+
+            STATUS=$(echo "$RESPONSE" | jq -r '.status')
+            
+            if [[ "$STATUS" == "successful" || "$STATUS" == "failed" || "$STATUS" == "error" ]]; then
+              break
+            fi
+            sleep 10
+          done
+
+          if [ "$STATUS" != "successful" ]; then
+            echo "Job did not complete successfully. Final status: $STATUS"
+            exit 1
+          else
+            echo "Job completed successfully. Final status: $STATUS"
+          fi
