@@ -1,3 +1,9 @@
+## [1.8.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.7.1...1.8.0) (2025-03-07)
+
+### Features
+
+* setup cicd for multi environment deployments ([#8](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/8)) ([0178d56](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/0178d562c441e8a77c915ffe9d7b418fef60c648))
+
 ## [1.7.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.7.0...1.7.1) (2025-03-06)
 
 ### Bug Fixes
