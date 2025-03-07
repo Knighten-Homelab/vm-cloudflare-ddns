@@ -18,8 +18,8 @@ on:
         required: true
         description: "Deployment Environment"
         options:
-          - Prod
-          - Test
+          - PROD
+          - TEST
       releaseRef:
         type: string
         default: main
