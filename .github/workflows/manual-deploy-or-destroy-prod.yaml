@@ -64,7 +64,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
           TF_VAR_vault_token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
         run: |
-          terraform apply -var-file=envs/prod.tfvars -auto-approve
+          terraform apply -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve
 
   deploy-awx-resources:
     runs-on: github-arc-runners
@@ -348,4 +348,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
           TF_VAR_vault_token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
         run: |
-          terraform destroy -var-file=envs/prod.tfvars -auto-approve
+          terraform destroy -var-file=envs/${{ github.event.inputs.environment }}.tfvars -auto-approve
