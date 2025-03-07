@@ -1,4 +1,4 @@
-vault_url="https://vault.knighten.io"
+vault_url="https://vault.test.knighten.io"
 vault_skip_tls_verify=false
 vault_pve_secrets_path="kv/homelab-pve-terraform-agent"
 vault_pdns_secrets_path="kv/pdns"
@@ -17,5 +17,5 @@ vm_ci_store_pool="local-zfs"
 vm_disk_store_pool="local-zfs"
 
 pdns_url="http://dns.knighten.io:8080/"
-dns_record_name="test.cloudflare-ddns"
+dns_record_name="cloudflare-ddns.test"
 dns_zone="knighten.io"
