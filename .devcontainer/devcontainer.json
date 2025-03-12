@@ -3,7 +3,8 @@
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
 		"ghcr.io/devcontainers/features/terraform:1": {},
-		"ghcr.io/devcontainers-extra/features/ansible:2": {}
+		"ghcr.io/devcontainers-extra/features/ansible:2": {},
+		"ghcr.io/roul/devcontainer-features/vault:1": {}
 	},
 	
 	"postCreateCommand": "pip3 install -r requirements.txt",
