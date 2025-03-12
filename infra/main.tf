@@ -1,30 +1,12 @@
-provider "vault" {
-  address         = var.vault_url
-  skip_tls_verify = var.vault_skip_tls_verify
-  token           = var.vault_token
-}
-
-data "vault_generic_secret" "pve_secrets" {
-  path = var.vault_pve_secrets_path
-}
-
 provider "proxmox" {
   pm_api_url  = var.pve_url
-  pm_user     = data.vault_generic_secret.pve_secrets.data["username"]
-  pm_password = data.vault_generic_secret.pve_secrets.data["password"]
-}
-
-data "vault_generic_secret" "pdns_secrets" {
-  path = var.vault_pdns_secrets_path
+  pm_user     = var.pve_username
+  pm_password = var.pve_password
 }
 
 provider "powerdns" {
   server_url = var.pdns_url
-  api_key    = data.vault_generic_secret.pdns_secrets.data["terraform_api_key"]
-}
-
-data "vault_generic_secret" "ansible_sa_secrets" {
-  path = var.vault_ansible_service_account_secrets_path
+  api_key    = var.pdns_api_key
 }
 
 module "cloudflare-ddns-vm" {
@@ -43,9 +25,9 @@ module "cloudflare-ddns-vm" {
 
   pve_use_ci             = true
   pve_ci_ssh_user        = "ansible"
-  pve_ci_ssh_private_key = data.vault_generic_secret.ansible_sa_secrets.data["ssh-key-private"]
+  pve_ci_ssh_private_key = var.pve_ci_ssh_private_key
   pve_ci_ssh_keys = [
-    data.vault_generic_secret.ansible_sa_secrets.data["ssh-key-public"]
+    var.pve_ci_ssh_public_key
   ]
   pve_ci_user               = "ansible"
   pve_ci_use_dhcp           = false
