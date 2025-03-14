@@ -59,12 +59,30 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URL_PROD }}
+          token: ${{ secrets.VAULT_TOKEN_PROD }}
+          secrets: |
+            kv/data/homelab-pve-ci-agent token-id | PVE_API_TOKEN_ID ;
+            kv/data/homelab-pve-ci-agent token-secret | PVE_API_TOKEN_SECRET ;
+            kv/data/pdns ci_api_Key | PDNS_API_KEY ;
+            kv/data/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
+            kv/data/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
+
       - name: Terraform Init
         env:
           AWS_ENDPOINT_URL_S3: ${{ secrets.S3_URL_PROD }}
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_PROD }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_PROD }}
           AWS_S3_STATE_BUCKET: ${{ secrets.S3_BUCKET_NAME_PROD }}
+          PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
+          PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
+          PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
+          TF_VAR_pve_ci_ssh_private_key: ${{ steps.import-secrets.outputs.PVE_CI_SSH_PRIVATE_KEY }}
+          TF_VAR_pve_ci_ssh_public_key: ${{ steps.import-secrets.outputs.PVE_CI_SSH_PUBLIC_KEY }}
         run: |
           terraform init -backend-config="bucket=${AWS_S3_STATE_BUCKET}"
 
@@ -74,6 +92,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_PROD }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY_PROD }}
           TF_VAR_vault_token: ${{ secrets.VAULT_TOKEN_PROD }}
+          PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
+          PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
+          PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
+          TF_VAR_pve_ci_ssh_private_key: ${{ steps.import-secrets.outputs.PVE_CI_SSH_PRIVATE_KEY }}
+          TF_VAR_pve_ci_ssh_public_key: ${{ steps.import-secrets.outputs.PVE_CI_SSH_PUBLIC_KEY }}
         run: |
           terraform apply -var-file=envs/prod.tfvars -auto-approve
 
