@@ -1,12 +1,9 @@
 provider "proxmox" {
   pm_api_url  = var.pve_url
-  pm_user     = var.pve_username
-  pm_password = var.pve_password
 }
 
 provider "powerdns" {
   server_url = var.pdns_url
-  api_key    = var.pdns_api_key
 }
 
 module "cloudflare-ddns-vm" {

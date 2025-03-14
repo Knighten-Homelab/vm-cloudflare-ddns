@@ -1,9 +1,3 @@
-vault_url="https://vault.knighten.io"
-vault_skip_tls_verify=false
-vault_pve_secrets_path="kv/homelab-pve-terraform-agent"
-vault_pdns_secrets_path="kv/pdns"
-vault_ansible_service_account_secrets_path="kv/homelab-ansible-sa"
-
 pve_url="https://primary.pve.knighten.io:8006/api2/json"
 pve_node="primary"
 vm_name="cloudflare-ddns"

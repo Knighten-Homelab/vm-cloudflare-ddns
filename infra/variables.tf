@@ -2,24 +2,6 @@
 #  Secret #
 ###########
 
-variable "pve_username" {
-  type        = string
-  description = "Proxmox VE username"
-  sensitive = true
-}
-
-variable "pve_password" {
-  type        = string
-  description = "Proxmox VE password"
-  sensitive = true
-}
-
-variable "pdns_api_key" {
-  type        = string
-  description = "PowerDNS API key"
-  sensitive = true
-}
-
 variable "pve_ci_ssh_private_key" {
   type        = string
   description = "SSH private key for the cloud-init user"
@@ -30,11 +12,6 @@ variable "pve_ci_ssh_public_key" {
   type        = string
   description = "SSH public key for the cloud-init user"
   sensitive = true
-}
-
-variable "vault_ansible_service_account_secrets_path" {
-  type        = string
-  description = "Path to the secrets in Vault for the Ansible service account"
 }
 
 ####################
