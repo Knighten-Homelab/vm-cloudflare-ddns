@@ -1,5 +1,5 @@
 provider "proxmox" {
-  pm_api_url  = var.pve_url
+  pm_api_url = var.pve_url
 }
 
 provider "powerdns" {

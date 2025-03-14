@@ -5,13 +5,13 @@
 variable "pve_ci_ssh_private_key" {
   type        = string
   description = "SSH private key for the cloud-init user"
-  sensitive = true
+  sensitive   = true
 }
 
 variable "pve_ci_ssh_public_key" {
   type        = string
   description = "SSH public key for the cloud-init user"
-  sensitive = true
+  sensitive   = true
 }
 
 ####################
