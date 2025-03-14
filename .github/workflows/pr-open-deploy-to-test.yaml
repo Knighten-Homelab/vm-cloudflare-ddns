@@ -39,11 +39,11 @@ jobs:
           url: ${{ secrets.VAULT_URL_TEST }}
           token: ${{ secrets.VAULT_TOKEN_TEST }}
           secrets: |
-            kv/homelab-pve-ci-agent token-id | PVE_API_TOKEN_ID ;
-            kv/homelab-pve-ci-agent token-secret | PVE_API_TOKEN_SECRET ;
-            kv/pdns pdns_api_key | PDNS_API_KEY ;
-            kv/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
-            kv/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
+            kv/data/homelab-pve-ci-agent token-id | PVE_API_TOKEN_ID ;
+            kv/data/homelab-pve-ci-agent token-secret | PVE_API_TOKEN_SECRET ;
+            kv/data/pdns pdns_api_key | PDNS_API_KEY ;
+            kv/data/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
+            kv/data/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
 
       - name: Terraform Init
         env:
