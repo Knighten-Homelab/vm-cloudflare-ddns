@@ -122,11 +122,22 @@ jobs:
       - name: Install Ansible Playbook Dependencies
         run: ansible-galaxy collection install awx.awx
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URL_PROD }}
+          token: ${{ secrets.VAULT_TOKEN_PROD }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Run AWX Resource Creation Playbook
         env:
-          CONTROLLER_HOST: ${{ secrets.AWX_HOST_PROD }}
-          CONTROLLER_USERNAME: ${{ secrets.AWX_USER_PROD }}
-          CONTROLLER_PASSWORD: ${{ secrets.AWX_PW_PROD }}
+          CONTROLLER_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          CONTROLLER_USERNAME: ${{ steps.import-secrets.outputs.AWX_USER}}
+          CONTROLLER_PASSWORD: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         working-directory: ansible
         run: |
           ansible-playbook \
@@ -144,12 +155,23 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets.VAULT_URL_PROD }}
+          token: ${{ secrets.VAULT_TOKEN_PROD }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Query AWX for Job Template
         id: query_job_template
         env:
-          AWX_HOST: ${{ secrets.AWX_HOST_PROD }}
-          AWX_USER: ${{ secrets.AWX_USER_PROD }}
-          AWX_PW: ${{ secrets.AWX_PW_PROD}}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -169,9 +191,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_job
         env:
-          AWX_HOST: ${{ secrets.AWX_HOST_PROD }}
-          AWX_USER: ${{ secrets.AWX_USER_PROD }}
-          AWX_PW: ${{ secrets.AWX_PW_PROD }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -190,9 +212,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_HOST: ${{ secrets.AWX_HOST_PROD }}
-          AWX_USER: ${{ secrets.AWX_USER_PROD }}
-          AWX_PW: ${{ secrets.AWX_PW_PROD }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_ID="${{ steps.launch_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"

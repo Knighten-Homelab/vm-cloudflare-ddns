@@ -111,11 +111,22 @@ jobs:
       - name: Install Ansible Playbook Dependencies
         run: ansible-galaxy collection install awx.awx
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets[format('VAULT_URL_{0}', github.event.inputs.environment)] }}
+          token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Run AWX Resource Creation Playbook
         env:
-          CONTROLLER_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          CONTROLLER_USERNAME: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          CONTROLLER_PASSWORD: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          CONTROLLER_USERNAME: ${{ steps.import-secrets.outputs.AWX_USER}}
+          CONTROLLER_PASSWORD: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         working-directory: ansible
         run: |
           ansible-playbook \
@@ -135,12 +146,23 @@ jobs:
         with:
           ref: ${{ github.event.inputs.releaseRef }}
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets[format('VAULT_URL_{0}', github.event.inputs.environment)] }}
+          token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Query AWX for Job Template
         id: query_deploy_job_template
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -160,9 +182,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_deploy_job
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_deploy_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -181,9 +203,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_ID="${{ steps.launch_deploy_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"
@@ -220,12 +242,23 @@ jobs:
         with:
           ref: ${{ github.event.inputs.releaseRef }}
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets[format('VAULT_URL_{0}', github.event.inputs.environment)] }}
+          token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Query AWX for Job Template
         id: query_remove_job_template
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
           JOB_TEMPLATE_NAME: "Cloudflare%20DDNS%20%28Containerized%29%20-%20Remove"
         run: |
           RESPONSE=$(curl -s -u "$AWX_USER:$AWX_PW" \
@@ -245,9 +278,9 @@ jobs:
       - name: Launch AWX Job Template
         id: launch_remove_job
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_TEMPLATE_ID="${{ steps.query_remove_job_template.outputs.job_template_id }}"
           LAUNCH_RESPONSE=$(curl -L -s -u "$AWX_USER:$AWX_PW" \
@@ -266,9 +299,9 @@ jobs:
 
       - name: Poll for Job Status
         env:
-          AWX_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          AWX_USER: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          AWX_PW: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          AWX_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          AWX_USER: ${{ steps.import-secrets.outputs.AWX_USER}}
+          AWX_PW: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         run: |
           JOB_ID="${{ steps.launch_remove_job.outputs.job_id }}"
           echo "Polling AWX for status of Job ID: $JOB_ID"
@@ -318,11 +351,22 @@ jobs:
       - name: Install Ansible Playbook Dependencies
         run: ansible-galaxy collection install awx.awx
 
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: ${{ secrets[format('VAULT_URL_{0}', github.event.inputs.environment)] }}
+          token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
+          secrets: |
+            kv/data/awx host | AWX_HOST ;
+            kv/data/awx user | AWX_USER ;
+            kv/data/awx pw | AWX_PASSWORD ;
+
       - name: Run AWX Resource Deletion Playbook
         env:
-          CONTROLLER_HOST: ${{ secrets[format('AWX_HOST_{0}', github.event.inputs.environment)] }}
-          CONTROLLER_USERNAME: ${{ secrets[format('AWX_USER_{0}', github.event.inputs.environment)] }}
-          CONTROLLER_PASSWORD: ${{ secrets[format('AWX_PW_{0}', github.event.inputs.environment)] }}
+          CONTROLLER_HOST: ${{ steps.import-secrets.outputs.AWX_HOST }}
+          CONTROLLER_USERNAME: ${{ steps.import-secrets.outputs.AWX_USER}}
+          CONTROLLER_PASSWORD: ${{ steps.import-secrets.outputs.AWX_PASSWORD }}
         working-directory: ansible
         run: |
           ansible-playbook \
@@ -385,7 +429,6 @@ jobs:
           AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
           AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
-          TF_VAR_vault_token: ${{ secrets[format('VAULT_TOKEN_{0}', github.event.inputs.environment)] }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
