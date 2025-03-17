@@ -59,13 +59,17 @@ jobs:
             kv/data/pdns ci_api_Key | PDNS_API_KEY ;
             kv/data/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
             kv/data/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
+            kv/data/homelab-minio-tf bucket | MINIO_TF_STATE_BUCKET ;
+            kv/data/homelab-minio-tf access | MINIO_ACCESS_KEY ;
+            kv/data/homelab-minio-tf secret | MINIO_SECRET_KEY ;
+            kv/data/homelab-minio-tf endpoint | MINIO_ENDPOINT ;
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
-          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_S3_STATE_BUCKET: ${{ secrets[format('S3_BUCKET_NAME_{0}', github.event.inputs.environment)] }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
@@ -76,9 +80,10 @@ jobs:
 
       - name: Terraform Apply
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
-          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
@@ -409,13 +414,17 @@ jobs:
             kv/data/pdns ci_api_Key | PDNS_API_KEY ;
             kv/data/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
             kv/data/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
+            kv/data/homelab-minio-tf bucket | MINIO_TF_STATE_BUCKET ;
+            kv/data/homelab-minio-tf access | MINIO_ACCESS_KEY ;
+            kv/data/homelab-minio-tf secret | MINIO_SECRET_KEY ;
+            kv/data/homelab-minio-tf endpoint | MINIO_ENDPOINT ;
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
-          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_S3_STATE_BUCKET: ${{ secrets[format('S3_BUCKET_NAME_{0}', github.event.inputs.environment)] }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
@@ -426,9 +435,10 @@ jobs:
 
       - name: Terraform Destroy
         env:
-          AWS_ENDPOINT_URL_S3: ${{ secrets[format('S3_URL_{0}', github.event.inputs.environment)] }}
-          AWS_ACCESS_KEY_ID: ${{ secrets[format('S3_ACCESS_KEY_{0}', github.event.inputs.environment)] }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets[format('S3_SECRET_KEY_{0}', github.event.inputs.environment)] }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
