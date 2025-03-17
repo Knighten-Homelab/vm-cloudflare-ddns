@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.8.1...1.9.0) (2025-03-17)
+
+### Features
+
+* move gha secrets to vault ([#9](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/9)) ([5904453](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/5904453f894e38a32cfa49c0c2d8f55ff26f2693))
+
 ## [1.8.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.8.0...1.8.1) (2025-03-07)
 
 ### Bug Fixes
