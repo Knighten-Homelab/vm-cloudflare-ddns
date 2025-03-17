@@ -51,10 +51,10 @@ jobs:
 
       - name: Terraform Init
         env:
-          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
-          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
-          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
@@ -65,10 +65,10 @@ jobs:
 
       - name: Terraform Apply
         env:
-          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.secrets.MINIO_ENDPOINT }}
-          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.secrets.MINIO_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.secrets.MINIO_SECRET_KEY}}
-          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.secrets.MINIO_TF_STATE_BUCKET }}
+          AWS_ENDPOINT_URL_S3: ${{ steps.import-secrets.outputs.MINIO_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ steps.import-secrets.outputs.MINIO_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.import-secrets.outputs.MINIO_SECRET_KEY}}
+          AWS_S3_STATE_BUCKET: ${{ steps.import-secrets.outputs.MINIO_TF_STATE_BUCKET }}
           PM_API_TOKEN_ID: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_ID }}
           PM_API_TOKEN_SECRET: ${{ steps.import-secrets.outputs.PVE_API_TOKEN_SECRET }}
           PDNS_API_KEY: ${{ steps.import-secrets.outputs.PDNS_API_KEY }}
