@@ -175,7 +175,7 @@ jobs:
           secrets: |
             kv/data/homelab-pve-ci-agent token-id | PVE_API_TOKEN_ID ;
             kv/data/homelab-pve-ci-agent token-secret | PVE_API_TOKEN_SECRET ;
-            kv/data/pdns ci_api_Key | PDNS_API_KEY ;
+            kv/data/pdns ci_api_key | PDNS_API_KEY ;
             kv/data/homelab-ansible-sa ssh-key-private | PVE_CI_SSH_PRIVATE_KEY ;
             kv/data/homelab-ansible-sa ssh-key-public | PVE_CI_SSH_PUBLIC_KEY ;
             kv/data/homelab-minio-tf bucket | MINIO_TF_STATE_BUCKET ;
