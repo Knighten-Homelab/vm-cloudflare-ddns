@@ -1,3 +1,9 @@
+## [1.9.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.0...1.9.1) (2025-03-17)
+
+### Bug Fixes
+
+* corrected referenced workflow in workflow_run on deploy to prod gha ([f5279e6](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/f5279e6e13417f08a9e8141c77e3bfee2c9ac9f1))
+
 ## [1.9.0](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.8.1...1.9.0) (2025-03-17)
 
 ### Features
