@@ -1,36 +1,17 @@
-########################
-#  Secret Related Vars #
-########################
+###########
+#  Secret #
+###########
 
-variable "vault_token" {
+variable "pve_ci_ssh_private_key" {
   type        = string
-  description = "Vault token to use for authentication"
+  description = "SSH private key for the cloud-init user"
+  sensitive   = true
 }
 
-variable "vault_url" {
+variable "pve_ci_ssh_public_key" {
   type        = string
-  description = "Vault URL to use for authentication"
-}
-
-variable "vault_skip_tls_verify" {
-  type        = bool
-  description = "Skip TLS verification for Vault"
-  default     = false
-}
-
-variable "vault_pve_secrets_path" {
-  type        = string
-  description = "Path to the secrets in Vault for Proxmox VE"
-}
-
-variable "vault_pdns_secrets_path" {
-  type        = string
-  description = "Path to the secrets in Vault for PowerDNS"
-}
-
-variable "vault_ansible_service_account_secrets_path" {
-  type        = string
-  description = "Path to the secrets in Vault for the Ansible service account"
+  description = "SSH public key for the cloud-init user"
+  sensitive   = true
 }
 
 ####################
