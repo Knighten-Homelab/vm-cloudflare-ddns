@@ -1,3 +1,9 @@
+## [1.9.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.1...1.9.2) (2025-03-17)
+
+### Bug Fixes
+
+* corrected accidental capital letter in ci_api_key ([8f8d247](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/8f8d2477b3c2210a39fa42d948f1861d8d45aede))
+
 ## [1.9.1](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.0...1.9.1) (2025-03-17)
 
 ### Bug Fixes
