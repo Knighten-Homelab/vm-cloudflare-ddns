@@ -54,6 +54,7 @@ At a high level, this repository uses the following technologies:
 
 GitHub Actions serves as the glue that integrates all the above technologies. It provisions Proxmox VMs using Terraform, runs an Ansible playbook to create required AWX resources, and then launches AWX job templates to deploy the Cloudflare DDNS container.
 
+The [favonia/cloudflare-ddns](https://github.com/favonia/cloudflare-ddns) container image is used to handle DDNS. It is a lightweight, Alpine-based container that uses the Cloudflare API to update DNS records. The container is deployed using Docker Compose,
 
 ## Required Tools & Devcontainer
 
