@@ -1,3 +1,9 @@
+## [1.9.4](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.3...1.9.4) (2025-04-17)
+
+### Bug Fixes
+
+* renamed gha ansible script var to playbook ([a176a10](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/a176a10d23122bd0867cad8af233827bfce2fdc2))
+
 ## [1.9.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.2...1.9.3) (2025-04-17)
 
 ### Bug Fixes
