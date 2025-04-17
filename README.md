@@ -1,4 +1,4 @@
-# Homelab - Cloudflare DDNS 
+# Homelab - Cloudflare DDNS
 
 This repository is designed for a homelab environment and uses Terraform, Ansible, and GitHub Actions to deploy a containerized Cloudflare Dynamic DNS (DDNS) solution.
 
