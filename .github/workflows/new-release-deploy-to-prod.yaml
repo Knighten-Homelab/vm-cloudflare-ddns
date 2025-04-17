@@ -1,0 +1,30 @@
+---
+name: New Release - Deploy To Prod
+run-name: Production Deployment for Push on ${{ github.ref_name }}
+
+on:
+  workflow_run:
+    workflows: ["Push To Main - Release"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  get-latest-tag:
+    name: Get Latest Tag
+    uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/github-get-latest-repo-tag.yaml@main
+
+  deploy-to-prod:
+    name: Deploy To Prod
+    needs: get-latest-tag
+    uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-apply-and-deploy-app-via-awx.yaml@main
+    with:
+      environment: prod
+      awx-resource-creation-script: create-awx-cloudflare-ddns-deployment-resources.yaml
+      awx-deploy-template-name: Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy
+      ref: ${{ needs.get-latest-tag.outputs.latest-tag }}
+    secrets:
+      VAULT_URL: ${{secrets.VAULT_URL }}
+      VAULT_TOKEN: ${{secrets.VAULT_TOKEN }}
