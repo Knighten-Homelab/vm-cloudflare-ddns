@@ -1,3 +1,9 @@
+## [1.9.3](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.2...1.9.3) (2025-04-17)
+
+### Bug Fixes
+
+* move to cookiecutter template base ([#10](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/issues/10)) ([98f1519](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/commit/98f15191049419b27b31c2decca0f47e2214ad8d))
+
 ## [1.9.2](https://github.com/Knighten-Homelab/vm-cloudflare-ddns/compare/1.9.1...1.9.2) (2025-03-17)
 
 ### Bug Fixes
