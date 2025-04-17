@@ -35,6 +35,7 @@
         state: present
         variables:
           hostname: "{{ hostname }}"
+          ansible_host: "{{ hostname }}"
 
     - name: Added host to groups
       awx.awx.group:

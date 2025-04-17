@@ -13,26 +13,11 @@ permissions:
   contents: read
 
 jobs:
-  github-release:
-    name: GitHub Release
-    runs-on: github-arc-runners
+  release:
+    name: Release
+    uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/semantic-release-to-gh.yaml@main
     permissions:
       contents: write
       issues: write
       pull-requests: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+  

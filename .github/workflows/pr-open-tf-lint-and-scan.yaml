@@ -1,0 +1,19 @@
+---
+name: PR Opened - Terraform - Lint and Scan
+run-name: Terraform Change Detected In PR ${{ github.event.number }} on ${{ github.head_ref }} - Lint and Scan
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - infra/**
+
+jobs:
+  lint-and-scan:
+    name: Terraform Lint and Security Scan
+    uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-lint-and-security-scan.yaml@main
+    with:
+      infra-directory: infra
