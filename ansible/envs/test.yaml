@@ -3,7 +3,7 @@ awx_target_inv: "Homelab"
 awx_git_credential: "Github - AWX SSH Key"
 awx_project_branch: "main"
 host: cloudflare-ddns
-hostname: "test.cloudflare-ddns.knighten.io"
+hostname: "cloudflare-ddns.test.knighten.io"
 host_groups:
   - "proxmox-hosts"
   - "ipa-managed-clients"
