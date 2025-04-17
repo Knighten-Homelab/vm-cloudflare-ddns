@@ -16,7 +16,7 @@ jobs:
     uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-destroy-and-app-cleanup-via-awx.yaml@main
     with:
       environment: test
-      awx-resource-deletion-script: delete-awx-cloudflare-ddns-deployment-resources.yaml
+      awx-resource-deletion-playbook: delete-awx-cloudflare-ddns-deployment-resources.yaml
       awx-undeploy-template-name: Cloudflare%20DDNS%20%28Containerized%29%20-%20Remove
     secrets:
       VAULT_URL: ${{secrets.VAULT_URL_TEST}}

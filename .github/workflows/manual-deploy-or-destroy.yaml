@@ -31,7 +31,7 @@ jobs:
     uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-apply-and-deploy-app-via-awx.yaml@main
     with:
       environment: ${{ github.event.inputs.environment }}
-      awx-resource-creation-script: create-awx-cloudflare-ddns-deployment-resources.yaml
+      awx-resource-creation-playbook: create-awx-cloudflare-ddns-deployment-resources.yaml
       awx-deploy-template-name: Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy
       ref: ${{ github.event.inputs.releaseRef }}
     secrets:
@@ -44,7 +44,7 @@ jobs:
     uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-destroy-and-app-cleanup-via-awx.yaml@main
     with:
       environment: ${{ github.event.inputs.environment }}
-      awx-resource-deletion-script: delete-awx-cloudflare-ddns-deployment-resources.yaml
+      awx-resource-deletion-playbook: delete-awx-cloudflare-ddns-deployment-resources.yaml
       awx-undeploy-template-name: Cloudflare%20DDNS%20%28Containerized%29%20-%20Remove
       ref: ${{ github.event.inputs.releaseRef }}
     secrets:

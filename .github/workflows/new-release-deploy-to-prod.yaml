@@ -22,7 +22,7 @@ jobs:
     uses: Knighten-Homelab/gha-reusable-workflows/.github/workflows/terraform-apply-and-deploy-app-via-awx.yaml@main
     with:
       environment: prod
-      awx-resource-creation-script: create-awx-cloudflare-ddns-deployment-resources.yaml
+      awx-resource-creation-playbook: create-awx-cloudflare-ddns-deployment-resources.yaml
       awx-deploy-template-name: Cloudflare%20DDNS%20%28Containerized%29%20-%20Deploy
       ref: ${{ needs.get-latest-tag.outputs.latest-tag }}
     secrets:
